@@ -7,38 +7,67 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Denis Collette - Junior Full-Stack Developer Portfolio" />
+		<meta name="description" content="Denis Collette's personal portfolio website." />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 	</head>
-	<body class="bg-gray-900 text-white font-sans">
-		<header class="p-8">
-			<nav class="container mx-auto flex justify-between items-center">
-				<a href="/" class="text-2xl font-bold tracking-tighter">Denis Collette</a>
-				<ul class="flex space-x-6">
-					<li><a href="/" class="hover:text-purple-400 transition-colors">Home</a></li>
-					<li><a href="/cv" class="hover:text-purple-400 transition-colors">My CV</a></li>
-					<li><a href="/projects" class="hover:text-purple-400 transition-colors">Projects</a></li>
-				</ul>
+	<body class="bg-white text-gray-800">
+		
+		<!-- Responsive Header -->
+		<header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+			<nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+				<a href="/" class="text-xl font-bold text-gray-800 hover:text-indigo-600 transition-colors">
+					Denis Collette
+				</a>
+
+				<!-- Desktop Menu -->
+				<div class="hidden md:flex space-x-8">
+					<a href="/" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Home</a>
+					<a href="/cv" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">My CV</a>
+					<a href="/projects" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Projects</a>
+				</div>
+
+				<!-- Mobile Menu Button -->
+				<button id="menu-btn" class="md:hidden flex items-center">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+					</svg>
+				</button>
 			</nav>
+
+			<!-- Mobile Menu -->
+			<div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white shadow-xl">
+				<a href="/" class="block text-center py-4 text-lg text-gray-700 hover:bg-gray-100">Home</a>
+				<a href="/cv" class="block text-center py-4 text-lg text-gray-700 hover:bg-gray-100">My CV</a>
+				<a href="/projects" class="block text-center py-4 text-lg text-gray-700 hover:bg-gray-100">Projects</a>
+			</div>
 		</header>
-		<main>
-			<slot />
-		</main>
-		<footer class="text-center p-8 mt-16 text-gray-500">
-			<p>&copy; {new Date().getFullYear()} Denis Collette. All rights reserved.</p>
-			<p class="mt-2">
-				<a href="https://github.com/denis-collette" target="_blank" class="hover:text-purple-400 transition-colors">GitHub</a> | 
-				<a href="https://linkedin.com/in/denis-collette/" target="_blank" class="hover:text-purple-400 transition-colors">LinkedIn</a>
-			</p>
+
+		<slot />
+
+		<!-- Footer -->
+		<footer class="bg-gray-900 text-white mt-auto">
+			<div class="container mx-auto py-6 px-6 text-center text-gray-400">
+				<p>&copy; {new Date().getFullYear()} Denis Collette. All rights reserved.</p>
+				<p class="text-sm mt-1">Built with <a href="https://astro.build/" class="underline hover:text-indigo-400">Astro</a> & <a href="https://tailwindcss.com/" class="underline hover:text-indigo-400">Tailwind CSS</a></p>
+			</div>
 		</footer>
+
+		<script>
+			const menuBtn = document.getElementById('menu-btn');
+			const mobileMenu = document.getElementById('mobile-menu');
+
+			if (menuBtn && mobileMenu) {
+				menuBtn.addEventListener('click', () => {
+					mobileMenu.classList.toggle('hidden');
+				});
+			}
+		</script>
 	</body>
 </html>
+
