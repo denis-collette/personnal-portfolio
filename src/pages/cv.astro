@@ -1,34 +1,55 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import CVTimeline from '../components/CVTimeline.astro';
+import Layout from "../layouts/Layout.astro";
+import CVTimeline from "../components/CVTimeline.astro";
 ---
 
 <Layout title="My CV - Denis Collette">
   <main>
     <!-- Header -->
-    <div class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white text-center py-16 px-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">My Professional Journey</h1>
-      <p class="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">An interactive timeline of my experience and education.</p>
+    <div
+      class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white text-center py-16 px-4"
+    >
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+        My Professional Journey
+      </h1>
+      <p class="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
+        An interactive timeline of my experience and education.
+      </p>
     </div>
 
     <!-- Sticky Sub-Navigation -->
-    <div class="bg-gray-100/80 backdrop-blur-sm sticky top-[68px] z-40 shadow-sm border-b border-gray-200">
+    <div
+      class="bg-gray-100/80 backdrop-blur-sm sticky top-[68px] z-20 shadow-sm border-b border-gray-200"
+    >
       <div class="container mx-auto px-6">
-        <div class="flex justify-start md:justify-center items-center h-12 overflow-x-auto">
+        <div
+          class="flex justify-start md:justify-center items-center h-12 overflow-x-auto"
+        >
           <nav class="flex space-x-6 text-sm font-medium">
-            <a href="#experience" class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold">
+            <a
+              href="#experience"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+            >
               Experience
             </a>
-            <a href="#education" class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold">
+            <a
+              href="#education"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+            >
               Education
+            </a>
+            <a
+              href="#certifications"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+            >
+              Certifications
             </a>
           </nav>
         </div>
       </div>
     </div>
-    
+
     <!-- Timeline Component -->
     <CVTimeline />
-
   </main>
 </Layout>
