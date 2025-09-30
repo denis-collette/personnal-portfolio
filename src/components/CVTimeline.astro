@@ -1,0 +1,246 @@
+---
+// Data for the timeline component
+const professionalExperience = [
+  {
+    title: 'Full-Stack Web Developer',
+    company: 'AVS IT | Wavre',
+    type: 'Internship',
+    date: 'June 2025 - Sep 2025',
+    description: 'Developed and maintained web application components using Angular and Astro, contributing to dynamic and responsive user interfaces. Gained practical experience with the AWS ecosystem, deploying and managing cloud infrastructure (S3, CodePipeline, IAM, DynamoDB) in an Agile environment.',
+    align: 'left'
+  },
+  {
+    title: 'Junior Web Developer',
+    company: 'BeCode.org | Liège',
+    type: 'Apprenticeship',
+    date: 'Nov 2024 - Sep 2025',
+    description: 'Completed an intensive 11-month, project-based training program. Mastered core web technologies (JS, Node.js, React, Laravel) and specialized in full-stack development, building applications and collaborating on complex projects.',
+    align: 'right'
+  },
+    {
+    title: 'Butcher-Caterer Employee',
+    company: 'Intermarché | Rhisnes & Gosselies',
+    type: 'Full-time / Part-time',
+    date: 'Apr 2024 - Sep 2024',
+    description: 'Managed customer service, prepared dishes, and ran the delicatessen/cheese counter. Responsibilities included recipe assembly, traceability tracking, order management, and ensuring compliance with health and safety standards.',
+    align: 'left'
+  },
+  {
+    title: 'Bakery Sales Assistant',
+    company: 'Levures Sauvages Bakery | Villers-la-Ville',
+    type: 'Part-time',
+    date: 'Sep 2023 - Feb 2024',
+    description: 'Oversaw daily operations of a bakery and tea-room, including sales, inventory/order management, store set-up, cash register operations, and table service.',
+    align: 'right'
+  },
+  {
+    title: 'General Clerk',
+    company: 'Carrefour Belgium | Waterloo',
+    type: 'Part-time',
+    date: 'Sep 2022 - Jul 2023',
+    description: 'Handled cashiering duties, received goods, unloaded trucks using manual and electric pallet trucks, and managed shelf stocking for various product departments.',
+    align: 'left'
+  },
+  {
+    title: 'Venue Manager',
+    company: 'VR EVASION | Nivelles',
+    type: 'Part-time',
+    date: 'Jul 2021 - Aug 2022',
+    description: 'Managed all operational aspects of a virtual reality leisure center, including staff supervision, customer experience, partner relationships, bar/cash desk operations, and ensuring the smooth running of activities.',
+    align: 'right'
+  },
+   {
+    title: 'Seasonal Worker',
+    company: 'Les paniers verts | Nivelles',
+    type: 'Seasonal',
+    date: 'May 2021 - Jul 2021',
+    description: 'Versatile worker on a seasonal organic fruit and vegetable farm, involved in planting, watering, sorting, grading products, and other related tasks.',
+    align: 'left'
+  },
+  {
+    title: 'Senior Social Media Manager',
+    company: 'Brand New Day Agency / WebVeille',
+    type: 'Full-time',
+    date: 'Jan 2016 - May 2021',
+    description: 'Managed social media strategies for international clients. Coordinated the Social Media Team, transformed client briefings into campaigns, and became a Digital Advertising Expert (Facebook certified).',
+    align: 'right'
+  },
+  {
+    title: 'Creative & Copywriter Intern',
+    company: 'MEC Belgium / Leo Burnett',
+    type: 'Internship',
+    date: 'Nov 2014 - Jan 2016',
+    description: 'Completed internships focused on creative copywriting, activation creation, technology news, and exploring emerging technologies like IoT.',
+    align: 'left'
+  }
+];
+
+const educationHistory = [
+    {
+    title: 'Junior Web Developer Certification',
+    company: 'BeCode | Liège',
+    type: 'Certification',
+    date: '2024 - 2025',
+    description: 'An intensive, project-focused program covering the full stack of modern web development.',
+    align: 'left'
+  },
+  {
+    title: 'Creative Writing Certificate',
+    company: 'Centre de Formation à Distance',
+    type: 'Certification',
+    date: '2015 - 2016',
+    description: 'Completed certification in creative writing techniques and professional redaction.',
+    align: 'right'
+  },
+  {
+    title: 'Copywriting Professional Certificate',
+    company: 'Centre de Formation à Distance',
+    type: 'Certification',
+    date: '2014 - 2015',
+    description: 'Completed professional training and certification in copywriting.',
+    align: 'left'
+  },
+  {
+    title: 'Bachelor\'s Studies, Advertising & Applied Arts',
+    company: 'HELHa | Mons',
+    type: 'Higher Education',
+    date: '2011 - 2014',
+    description: 'Studied advertising and applied arts, gaining foundational skills in design and communication. Note: Studies discontinued.',
+    align: 'right'
+  }
+];
+---
+
+<div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+  <!-- Professional Experience Section -->
+  <div id="experience" class="scroll-mt-20">
+    <h2 class="text-4xl font-extrabold text-center text-indigo-600 mb-12 tracking-tight">Professional Experience</h2>
+    <div class="relative">
+      <!-- Vertical line -->
+      <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-300 md:left-1/2 md:-translate-x-1/2" aria-hidden="true"></div>
+
+      {professionalExperience.map((event, index) => (
+        <div class:list={[
+          "timeline-event relative pl-12 mb-8 md:pl-0",
+          "md:flex md:items-center md:w-full",
+          { "md:flex-row-reverse": event.align === 'right' }
+        ]}>
+          <div class="hidden md:block md:w-5/12"></div>
+          <div class="z-10 absolute left-4 top-1 transform -translate-x-1/2 md:relative md:transform-none md:left-0 flex h-8 w-8 items-center rounded-full bg-gray-800 shadow-xl">
+            <h1 class="mx-auto text-lg font-semibold text-white">{professionalExperience.length - index}</h1>
+          </div>
+          <div class="timeline-card w-full md:w-5/12 rounded-lg bg-white p-6 shadow-xl cursor-pointer transition-all duration-500">
+            <div class="card-header flex justify-between items-center">
+              <div>
+                <span class="font-semibold text-sm text-indigo-600">{event.type}</span>
+                <h3 class="text-xl font-bold text-gray-800 mt-1">{event.title}</h3>
+                <p class="text-md font-semibold text-gray-600">{event.company}</p>
+                <p class="text-sm text-gray-500 mb-2">{event.date}</p>
+              </div>
+              <svg class="w-6 h-6 text-gray-400 transition-transform duration-300 chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
+            <div class="card-body max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <p class="text-sm text-gray-700 pt-4 border-t border-gray-200 mt-4">{event.description}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Education Section -->
+  <div id="education" class="mt-20 scroll-mt-20">
+    <h2 class="text-4xl font-extrabold text-center text-indigo-600 mb-12 tracking-tight">Education & Training</h2>
+    <div class="relative">
+      <!-- Vertical line -->
+      <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-300 md:left-1/2 md:-translate-x-1/2" aria-hidden="true"></div>
+      
+      {educationHistory.map((event, index) => (
+        <div class:list={[
+          "timeline-event relative pl-12 mb-8 md:pl-0",
+          "md:flex md:items-center md:w-full",
+          { "md:flex-row-reverse": event.align === 'right' }
+        ]}>
+          <div class="hidden md:block md:w-5/12"></div>
+          <div class="z-10 absolute left-4 top-1 transform -translate-x-1/2 md:relative md:transform-none md:left-0 flex h-8 w-8 items-center rounded-full bg-indigo-600 shadow-xl">
+            <h1 class="mx-auto text-lg font-semibold text-white">{educationHistory.length - index}</h1>
+          </div>
+          <div class="timeline-card w-full md:w-5/12 rounded-lg bg-white p-6 shadow-xl cursor-pointer transition-all duration-500">
+            <div class="card-header flex justify-between items-center">
+              <div>
+                <span class="font-semibold text-sm text-indigo-600">{event.type}</span>
+                <h3 class="text-xl font-bold text-gray-800 mt-1">{event.title}</h3>
+                <p class="text-md font-semibold text-gray-600">{event.company}</p>
+                <p class="text-sm text-gray-500 mb-2">{event.date}</p>
+              </div>
+              <svg class="w-6 h-6 text-gray-400 transition-transform duration-300 chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
+            <div class="card-body max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+              <p class="text-sm text-gray-700 pt-4 border-t border-gray-200 mt-4">{event.description}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Fade-in on scroll effect
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    const timelineEvents = document.querySelectorAll('.timeline-event');
+    timelineEvents.forEach(event => {
+      observer.observe(event);
+    });
+
+    // Click-to-expand effect
+    const timelineCards = document.querySelectorAll('.timeline-card');
+    timelineCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const body = card.querySelector('.card-body');
+        const chevron = card.querySelector('.chevron');
+        
+        if (body && chevron) {
+            card.classList.toggle('is-open');
+            chevron.classList.toggle('rotate-180');
+
+            if (card.classList.contains('is-open')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            } else {
+                body.style.maxHeight = '0px';
+            }
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .timeline-event {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .timeline-event.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .rotate-180 {
+    transform: rotate(180deg);
+  }
+</style>
+
