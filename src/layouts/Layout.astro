@@ -1,0 +1,44 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Denis Collette - Junior Full-Stack Developer Portfolio" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-gray-900 text-white font-sans">
+		<header class="p-8">
+			<nav class="container mx-auto flex justify-between items-center">
+				<a href="/" class="text-2xl font-bold tracking-tighter">Denis Collette</a>
+				<ul class="flex space-x-6">
+					<li><a href="/" class="hover:text-purple-400 transition-colors">Home</a></li>
+					<li><a href="/cv" class="hover:text-purple-400 transition-colors">My CV</a></li>
+					<li><a href="/projects" class="hover:text-purple-400 transition-colors">Projects</a></li>
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer class="text-center p-8 mt-16 text-gray-500">
+			<p>&copy; {new Date().getFullYear()} Denis Collette. All rights reserved.</p>
+			<p class="mt-2">
+				<a href="https://github.com/denis-collette" target="_blank" class="hover:text-purple-400 transition-colors">GitHub</a> | 
+				<a href="https://linkedin.com/in/denis-collette/" target="_blank" class="hover:text-purple-400 transition-colors">LinkedIn</a>
+			</p>
+		</footer>
+	</body>
+</html>
