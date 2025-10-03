@@ -89,13 +89,28 @@ export default class Game {
     const index = parseInt(choice) - 1;
     if (index >= 0 && index < this.master.collection.length) {
       const poke = this.master.collection[index];
-      const action = await this.ask(`What to do with ${poke.name}?\n1. Heal (${this.master.healingItems})\n2. Revive (${this.master.reviveItems})\n3. Rename\n4. Back`);
+      
+      const action = await this.ask(`What to do with ${poke.name}?\n1. Heal (${this.master.healingItems})\n2. Revive (${this.master.reviveItems})\n3. Rename\n4. Release\n5. Back`);
+      
       if (action === "1") this.display(this.master.healPokemilton(poke));
       else if (action === "2") this.display(this.master.revivePokemilton(poke));
       else if (action === "3") {
         const newName = await this.ask(`New name for ${poke.name}:`);
         if (newName) this.display(this.master.renamePokemilton(poke, newName));
+      } 
+      else if (action === "4") {
+        if (this.master.collection.length <= 1) {
+          this.display("You can't release your last Pokemilton!");
+        } else {
+          const confirm = await this.ask(`Are you sure you want to release ${poke.name}? This cannot be undone. (yes/no)`);
+          if (confirm.toLowerCase() === 'yes') {
+            this.display(this.master.releasePokemilton(poke));
+          } else {
+            this.display("Release cancelled.");
+          }
+        }
       }
+      // Note: The "Back" option is now implicitly handled if no other action is chosen.
     } else { this.display("Invalid selection."); }
   }
 
