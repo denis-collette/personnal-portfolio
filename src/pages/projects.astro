@@ -5,7 +5,9 @@ import PokemiltonGame from "../components/PokemiltonGame.astro";
 
 <Layout title="My Projects | Denis Collette">
   <main>
-    <div class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white text-center py-16 px-4">
+    <div
+      class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white text-center py-16 px-4"
+    >
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
         My Projects
       </h1>
@@ -14,40 +16,53 @@ import PokemiltonGame from "../components/PokemiltonGame.astro";
       </p>
     </div>
 
-    <div class="bg-gray-100/80 backdrop-blur-sm sticky top-[68px] z-20 shadow-sm border-b border-gray-200">
-      <div class="container mx-auto px-6">
-        <div class="flex justify-start md:justify-center items-center h-12 overflow-x-auto">
-          <nav class="flex space-x-6 text-sm font-medium">
-            <a href="#pokemilton" class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold">
-              Pokemilton Game
-            </a>
-            <a href="#more-projects" class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold">
-              More Coming Soon
-            </a>
+    <div
+      class="bg-gray-100/80 backdrop-blur-sm sticky top-[68px] z-20 shadow-sm border-b border-gray-200"
+    >
+      <div class="container mx-auto px-4 sm:px-6">
+        <div
+          class="flex justify-start md:justify-center items-center h-12 overflow-x-auto"
+        >
+          <nav class="flex space-x-4 sm:space-x-6 text-sm font-medium">
+            <a
+              href="#pokemilton"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+              >Pokemilton Game</a
+            >
+            <a
+              href="#more-projects"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+              >More Coming Soon</a
+            >
           </nav>
         </div>
       </div>
     </div>
 
     <section id="pokemilton" class="py-16 bg-gray-900 text-white scroll-mt-16">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-indigo-400 mb-4">Pokemilton Game</h2>
+      <div class="container mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center text-indigo-400 mb-4">
+          Pokemilton Game
+        </h2>
         <p class="text-center text-gray-300 max-w-2xl mx-auto mb-12">
-          An interactive version of a terminal-based RPG I built during my training. It showcases core JavaScript logic, state management, and the process of porting a Node.js application to a browser environment.
+          An interactive version of a terminal-based RPG I built during my
+          training.
         </p>
         <PokemiltonGame />
       </div>
     </section>
-    
+
     <div class="border-b border-gray-200"></div>
 
     <section id="more-projects" class="py-20 bg-white scroll-mt-16">
-      <div class="container mx-auto px-6 text-center">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">More on the way...</h2>
+      <div class="container mx-auto px-4 sm:px-6 text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">
+          More on the way...
+        </h2>
         <p class="text-gray-600 max-w-2xl mx-auto">
-          I'm always working on something new. Check back soon for more projects!
+          I'm always working on something new. Check back soon for more
+          projects!
         </p>
-        
       </div>
     </section>
   </main>
