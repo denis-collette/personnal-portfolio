@@ -1,0 +1,82 @@
+---
+// No changes here
+---
+<div id="game-container" class="bg-gray-900 text-white p-6 rounded-lg shadow-xl font-mono max-w-3xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-2xl font-bold text-indigo-400">Pokemilton Adventure 👾</h3>
+    <button id="reset-button" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md font-bold">Restart Game</button>
+  </div>
+  <div id="game-output" class="w-full h-96 bg-black p-4 rounded-md overflow-y-auto whitespace-pre-wrap mb-4" aria-live="polite">
+    <p>Initializing game engine...</p>
+  </div>
+  <div id="game-input-area" class="flex gap-4">
+    <input type="text" id="user-input" class="flex-grow bg-gray-800 border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your choice..." autofocus />
+    <button id="submit-button" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md font-bold transition-transform duration-200 transform hover:scale-105">Submit</button>
+  </div>
+</div>
+
+<script>
+  import Game from "../pokemilton/Game.js";
+
+  function initializeGame() {
+    const gameOutput = document.getElementById("game-output");
+    const userInput = document.getElementById("user-input") as HTMLInputElement;
+    const submitButton = document.getElementById("submit-button");
+    const resetButton = document.getElementById("reset-button");
+
+    if (!gameOutput || !userInput || !submitButton || !resetButton) {
+      console.error("Fatal Error: Game UI elements could not be found.");
+      return;
+    }
+
+    gameOutput.innerHTML = "";
+
+    let gameInstance;
+
+    const display = (text) => {
+      if (text) {
+        gameOutput.innerHTML += text.trim().replace(/\n/g, '<br />') + '<br /><br />';
+        gameOutput.scrollTop = gameOutput.scrollHeight;
+      }
+    };
+
+    const ask = (question) => {
+      display(question);
+      userInput.focus();
+      return new Promise((resolve) => {
+        const onButtonClick = () => {
+          const answer = userInput.value;
+          display(`> ${answer}`);
+          userInput.value = "";
+          submitButton.removeEventListener("click", onButtonClick);
+          userInput.removeEventListener("keydown", onEnterPress);
+          resolve(answer);
+        };
+        const onEnterPress = (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            onButtonClick();
+          }
+        };
+        submitButton.addEventListener("click", onButtonClick);
+        userInput.addEventListener("keydown", onEnterPress);
+      });
+    };
+
+    function startGame() {
+        gameInstance = new Game(display, ask);
+        gameInstance.run();
+    }
+    
+    resetButton.addEventListener("click", () => {
+        display("--- RESTARTING GAME ---");
+        gameOutput.innerHTML = ""; 
+        startGame();
+    });
+
+    // Initial game start
+    startGame();
+  }
+
+  document.addEventListener("DOMContentLoaded", initializeGame);
+</script>
