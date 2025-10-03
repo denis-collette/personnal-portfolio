@@ -103,7 +103,7 @@ export default class Game {
       else this.display("Invalid choice.");
     }
   }
-  
+
   async menuBattleItems() {
     let itemUsed = false;
     const choice = await this.ask(`Which item?\n1. Heal Potion (${this.master.healingItems})\n2. Revive Potion (${this.master.reviveItems})\n3. Pokeball (${this.master.pokeballs})\n4. Back`);
@@ -145,7 +145,6 @@ export default class Game {
 
     const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
 
-    // This logic handles the initial choice to Fight or Flee
     if (choice !== '1') {
       const fleeMessage = this.arena.tryToFlee();
       this.display(fleeMessage);
@@ -155,44 +154,38 @@ export default class Game {
         return;
       } else {
         this.display(this.world.addLog("Couldn't get away!"));
-        // If flee fails, you must choose a Pokemilton to take the first hit
-        while (true) {
-          this.display(this.master.showCollection());
-          const pokeChoice = await this.ask("Choose a Pokemilton to send out!");
-          const index = parseInt(pokeChoice) - 1;
-          if (index >= 0 && index < this.master.collection.length) {
-            if (this.master.collection[index].healthPool > 0) {
-              this.arena.setFighter(this.master.collection[index]);
-              this.arena.indexFighter = index;
-              break;
-            } else { this.display("That Pokemilton can't battle!"); }
-          } else { this.display("Invalid choice."); }
-        }
+
+        const choseFighter = await this.chooseFighterForBattle();
+        if (!choseFighter) return; // All Pokemilton fainted, end encounter.
+
         this.display(this.arena.wildPokemiltonAction());
         this.arena.checkStatus(this.master);
       }
     }
 
-    // This block runs if you chose "Fight" initially, OR if a fighter hasn't been set after a failed flee
+    // This block runs if you chose "Fight" initially
     if (!this.arena.fighter) {
-      while (true) {
-        this.display(this.master.showCollection());
-        const pokeChoice = await this.ask("Choose your Pokemilton to battle!");
-        const index = parseInt(pokeChoice) - 1;
-        if (index >= 0 && index < this.master.collection.length) {
-          if (this.master.collection[index].healthPool > 0) {
-            this.arena.setFighter(this.master.collection[index]);
-            this.arena.indexFighter = index;
-            break;
-          } else { this.display("That Pokemilton can't battle!"); }
-        } else { this.display("Invalid choice."); }
-      }
+      const choseFighter = await this.chooseFighterForBattle();
+      if (!choseFighter) return;
     }
 
     this.display(this.arena.startBattle());
 
     // Main battle loop
-    while (this.arena.status === 'ongoing') {
+    while (["ongoing", "starting"].includes(this.arena.status)) { // LOOP WHILE ONGOING OR NEEDS A NEW FIGHTER
+
+      if (this.arena.status === "starting") {
+        this.display(`${this.arena.fighter.name} has fainted!`);
+        const choseNewFighter = await this.chooseFighterForBattle();
+        // If you can't choose a new one (all fainted), the loop will end.
+        if (!choseNewFighter) {
+          this.arena.status = "loose";
+          break;
+        }
+        this.arena.status = "ongoing"; // Reset status to continue the battle
+        this.display(`${this.arena.fighter.name}, go!`);
+      }
+
       this.display(`--- Battle ---\n${this.arena.fighter.name} (HP: ${this.arena.fighter.healthPool}) vs ${this.arena.wild.name} (HP: ${this.arena.wild.healthPool})`);
       const action = await this.ask(`Action:\n1. Attack\n2. Item\n3. Flee`);
 
@@ -218,13 +211,35 @@ export default class Game {
       }
     }
 
-    // Handle post-battle logic
     if (this.arena.status === "capture") {
       this.display(this.master.catchPokemilton(this.arena.wild));
     }
 
     this.master.injectFighter(this.arena);
     this.display(this.world.addLog(this.arena.endBattle(this.master)));
+  }
+
+  async chooseFighterForBattle() {
+    while (true) {
+      // Check if there are any usable Pokemilton left
+      const availableFighters = this.master.collection.filter(p => p.healthPool > 0);
+      if (availableFighters.length === 0) {
+        this.display("You have no more Pokemilton that can fight!");
+        return false; // Indicate that no fighter could be chosen
+      }
+
+      this.display(this.master.showCollection());
+      const pokeChoice = await this.ask("Choose your next Pokemilton!");
+      const index = parseInt(pokeChoice) - 1;
+
+      if (index >= 0 && index < this.master.collection.length) {
+        if (this.master.collection[index].healthPool > 0) {
+          this.arena.setFighter(this.master.collection[index]);
+          this.arena.indexFighter = index;
+          return true; // Indicate success
+        } else { this.display("That Pokemilton can't battle!"); }
+      } else { this.display("Invalid choice."); }
+    }
   }
 
   // --- MAIN GAME RUNNER ---
