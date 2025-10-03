@@ -125,26 +125,66 @@ export default class Game {
   async menuBattleItems() {
     let itemUsed = false;
     const choice = await this.ask(`Which item?\n1. Heal Potion (${this.master.healingItems})\n2. Revive Potion (${this.master.reviveItems})\n3. Pokeball (${this.master.pokeballs})\n4. Back`);
+
     switch (choice) {
       case '1':
-        if (this.master.healingItems > 0) { this.display(this.master.healPokemilton(this.arena.fighter)); itemUsed = true; }
-        else { this.display("You don't have any Heal Potions!"); }
+        if (this.master.healingItems > 0) {
+          // Display the collection so the player can see HP
+          this.display(this.master.showCollection());
+          const healChoice = await this.ask("Which Pokemilton would you like to heal? (or 'back')");
+
+          if (healChoice.toLowerCase() === 'back') {
+            break; // Go back to the item menu without using a turn
+          }
+
+          const index = parseInt(healChoice) - 1;
+          if (index >= 0 && index < this.master.collection.length) {
+            const pokeToHeal = this.master.collection[index];
+            this.display(this.master.healPokemilton(pokeToHeal));
+            itemUsed = true; // Using a potion counts as a turn
+          } else {
+            this.display("Invalid selection.");
+          }
+        } else {
+          this.display("You don't have any Heal Potions!");
+        }
         break;
       case '2':
         if (this.master.reviveItems > 0) {
           const fainted = this.master.collection.filter(p => p.healthPool <= 0);
-          if (fainted.length === 0) { this.display("None of your Pokemiltons need reviving!"); break; }
+          if (fainted.length === 0) {
+            this.display("None of your Pokemiltons need reviving!");
+            break;
+          }
           let reviveMenuText = "Which Pokemilton to revive?\n";
-          fainted.forEach((p, i) => { reviveMenuText += `${i + 1}. ${p.name}\n`; });
-          const reviveChoice = await this.ask(reviveMenuText);
+          this.display(this.master.showCollection());
+          const reviveChoice = await this.ask("Which fainted Pokemilton would you like to revive? (or 'back')");
+
+          if (reviveChoice.toLowerCase() === 'back') {
+            break;
+          }
+
           const index = parseInt(reviveChoice) - 1;
-          if (index >= 0 && index < fainted.length) { this.display(this.master.revivePokemilton(fainted[index])); itemUsed = true; }
-          else { this.display("Invalid selection."); }
-        } else { this.display("You don't have any Revive Potions!"); }
+          const targetPoke = this.master.collection[index];
+
+          // Check if the chosen Pokemilton is actually fainted
+          if (targetPoke && targetPoke.healthPool <= 0) {
+            this.display(this.master.revivePokemilton(targetPoke));
+            itemUsed = true;
+          } else {
+            this.display("Invalid selection or that Pokemilton is not fainted.");
+          }
+        } else {
+          this.display("You don't have any Revive Potions!");
+        }
         break;
       case '3':
-        if (this.master.pokeballs > 0) { this.display(this.arena.tryToCatch(this.master)); itemUsed = true; }
-        else { this.display("You're out of Pokeballs!"); }
+        if (this.master.pokeballs > 0) {
+          this.display(this.arena.tryToCatch(this.master));
+          itemUsed = true;
+        } else {
+          this.display("You're out of Pokeballs!");
+        }
         break;
       case '4':
         break;

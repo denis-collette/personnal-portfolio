@@ -10,8 +10,8 @@ export default class World {
     if (this.log.length === 0) {
       logMessage += "Nothing has happened yet...";
     } else {
-      // Display up to the last 6 entries
-      const entries = this.log.slice(0, 6).reverse();
+      // Display up to the last 10 entries
+      const entries = this.log.slice(0, 10).reverse();
       logMessage += entries.join('\n');
     }
     return logMessage;
