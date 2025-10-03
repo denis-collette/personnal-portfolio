@@ -156,20 +156,20 @@ export default class Game {
         this.display(this.world.addLog("Couldn't get away!"));
         const choseFighter = await this.chooseFighterForBattle();
         if (!choseFighter) return;
+
         this.display(this.arena.wildPokemiltonAction());
         this.arena.checkStatus(this.master);
       }
     }
 
     if (!this.arena.fighter) {
-      const choseFighter = await this.chooseFighterForBattle();
+      const choseFighter = await this.chooseFighterForBattle(); 
       if (!choseFighter) return;
     }
     
     this.display(this.arena.startBattle());
 
     while (["ongoing", "starting"].includes(this.arena.status)) {
-      
       if (this.arena.status === "starting") {
         this.display(`${this.arena.fighter.name} has fainted!`);
         const choseNewFighter = await this.chooseFighterForBattle();
@@ -180,8 +180,6 @@ export default class Game {
         this.arena.status = "ongoing";
         this.display(`${this.arena.fighter.name}, go!`);
         
-        // After switching, skip the player's action for this turn and
-        // proceed immediately to the wild Pokemilton's attack.
         this.display(this.arena.wildPokemiltonAction());
         this.arena.checkStatus(this.master);
         continue;

@@ -54,10 +54,10 @@ export default class Arena {
       return `${this.fighter.gainExperience(this.wild.level)}\nYou won and found ${prize} coins!`;
     } else if (this.status === "loose") {
       return `You lost...`;
-    } else if (this.status === "capture") { 
-      return `You successfully captured ${this.wild.name}!`;
+    } else if (this.status === "capture") {
+      return `${this.fighter.gainExperience(this.wild.level)}\nYou successfully captured ${this.wild.name}!`;
     }
-    return `You fled the battle.`; 
+    return `You fled the battle.`;
   }
 
   checkStatus(master) {

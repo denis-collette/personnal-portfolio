@@ -16,7 +16,7 @@ export default class Master {
     let collectionString = "";
     for (let i = 0; i < this.collection.length; i++) {
       const p = this.collection[i];
-      collectionString += `${i + 1}. ${p.name} | HP: ${p.healthPool}/${p.initialHealthPool} | ATK: ${p.attackRange} | DEF: ${p.defenseRange}\n`;
+      collectionString += `${i + 1}. ${p.name} | LVL: ${p.level} | XP: ${p.experienceMeter}/${p.level * 20} | HP: ${p.healthPool}/${p.initialHealthPool}\n`;
     }
     return collectionString;
   }
@@ -77,7 +77,7 @@ export default class Master {
 
   injectFighter(arena) {
     if (this.collection[arena.indexFighter]) {
-      this.collection[arena.indexFighter] = { ...arena.fighter };
+      this.collection[arena.indexFighter] = arena.fighter;
     }
   }
 }
