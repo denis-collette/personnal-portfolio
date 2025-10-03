@@ -48,9 +48,9 @@ export default class Game {
     let chosen;
     while (!chosen) {
       const a = await this.ask(text);
-      if (a === "1") chosen = c1; 
-      else if (a === "2") chosen = c2; 
-      else if (a === "3") chosen = c3; 
+      if (a === "1") chosen = c1;
+      else if (a === "2") chosen = c2;
+      else if (a === "3") chosen = c3;
       else this.display("Invalid choice.");
     }
     this.master.collection.push(chosen);
@@ -89,15 +89,15 @@ export default class Game {
     const index = parseInt(choice) - 1;
     if (index >= 0 && index < this.master.collection.length) {
       const poke = this.master.collection[index];
-      
+
       const action = await this.ask(`What to do with ${poke.name}?\n1. Heal (${this.master.healingItems})\n2. Revive (${this.master.reviveItems})\n3. Rename\n4. Release\n5. Back`);
-      
+
       if (action === "1") this.display(this.master.healPokemilton(poke));
       else if (action === "2") this.display(this.master.revivePokemilton(poke));
       else if (action === "3") {
         const newName = await this.ask(`New name for ${poke.name}:`);
         if (newName) this.display(this.master.renamePokemilton(poke, newName));
-      } 
+      }
       else if (action === "4") {
         if (this.master.collection.length <= 1) {
           this.display("You can't release your last Pokemilton!");
@@ -110,13 +110,24 @@ export default class Game {
           }
         }
       }
-      // Note: The "Back" option is now implicitly handled if no other action is chosen.
     } else { this.display("Invalid selection."); }
   }
 
   async menuShop() {
     while (true) {
-      const choice = await this.ask(`Welcome! You have ${this.master.coins} coins.\n1. Heal Potion (20c)\n2. Revive Potion (50c)\n3. Pokeball (75c)\n4. Back`);
+      const choice = await this.ask(
+        `Welcome! You have ${this.master.coins} coins.\n\n` +
+        `Your Inventory:\n` +
+        `- Heal Potions: ${this.master.healingItems}\n` +
+        `- Revive Potions: ${this.master.reviveItems}\n` +
+        `- Pokeballs: ${this.master.pokeballs}\n\n` +
+        `What would you like to buy?\n` +
+        `1. Heal Potion (20c)\n` +
+        `2. Revive Potion (50c)\n` +
+        `3. Pokeball (75c)\n` +
+        `4. Back`
+      );
+
       if (choice === '1' && this.master.coins >= 20) { this.master.coins -= 20; this.master.healingItems++; this.display("Bought a Heal Potion."); }
       else if (choice === '2' && this.master.coins >= 50) { this.master.coins -= 50; this.master.reviveItems++; this.display("Bought a Revive Potion."); }
       else if (choice === '3' && this.master.coins >= 75) { this.master.coins -= 75; this.master.pokeballs++; this.display("Bought a Pokeball."); }
