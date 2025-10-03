@@ -41,11 +41,17 @@ export default class Game {
 
   async proposeFirstPokemilton() {
     const c1 = new Pokemilton(), c2 = new Pokemilton(), c3 = new Pokemilton();
-    const text = `Choose your first starter:\n1. ${c1.name}\n2. ${c2.name}\n3. ${c3.name}`;
+    const text = `Choose your first starter:\n` +
+      `1. ${c1.name} (HP: ${c1.healthPool}, ATK: ${c1.attackRange}, DEF: ${c1.defenseRange})\n` +
+      `2. ${c2.name} (HP: ${c2.healthPool}, ATK: ${c2.attackRange}, DEF: ${c2.defenseRange})\n` +
+      `3. ${c3.name} (HP: ${c3.healthPool}, ATK: ${c3.attackRange}, DEF: ${c3.defenseRange})`;
     let chosen;
     while (!chosen) {
       const a = await this.ask(text);
-      if (a === "1") chosen = c1; else if (a === "2") chosen = c2; else if (a === "3") chosen = c3; else this.display("Invalid choice.");
+      if (a === "1") chosen = c1; 
+      else if (a === "2") chosen = c2; 
+      else if (a === "3") chosen = c3; 
+      else this.display("Invalid choice.");
     }
     this.master.collection.push(chosen);
     this.display(`You chose ${chosen.name}!`);
@@ -56,7 +62,7 @@ export default class Game {
 
     // Check if the current day is a multiple of 10
     if (this.world.day > 1 && this.world.day % 10 === 0) {
-      this.display("You reached a Poke-Center, all your Pokemiltons are now in full form! 🏥");
+      this.display("You reached a Poke-Center, all your Pokemiltons are now in great shape!");
       for (const poke of this.master.collection) {
         // Revive and fully heal each Pokemilton
         poke.healthPool = poke.initialHealthPool;
@@ -153,17 +159,17 @@ export default class Game {
   async startEncounter() {
     this.arena = new Arena();
     this.arena.wild = new Pokemilton();
-    
+
     const wild = this.arena.wild;
     const appearanceMessage = `A wild ${wild.name} appeared!\n(LVL: ${wild.level} | HP: ${wild.healthPool} | ATK: ${wild.attackRange} | DEF: ${wild.defenseRange})`;
     this.display(this.world.addLog(appearanceMessage));
 
     const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
-    
+
     if (choice !== '1') {
       const fleeMessage = this.arena.tryToFlee();
       this.display(fleeMessage);
-      
+
       if (fleeMessage === "You managed to flee!") {
         this.display(this.world.addLog("Successfully fled."));
         return;
@@ -178,10 +184,10 @@ export default class Game {
     }
 
     if (!this.arena.fighter) {
-      const choseFighter = await this.chooseFighterForBattle(); 
+      const choseFighter = await this.chooseFighterForBattle();
       if (!choseFighter) return;
     }
-    
+
     this.display(this.arena.startBattle());
 
     while (["ongoing", "starting"].includes(this.arena.status)) {
@@ -189,56 +195,56 @@ export default class Game {
         this.display(`${this.arena.fighter.name} has fainted!`);
         const choseNewFighter = await this.chooseFighterForBattle();
         if (!choseNewFighter) {
-            this.arena.status = "loose";
-            break;
+          this.arena.status = "loose";
+          break;
         }
         this.arena.status = "ongoing";
         this.display(`${this.arena.fighter.name}, go!`);
-        
+
         this.display(this.arena.wildPokemiltonAction());
         this.arena.checkStatus(this.master);
         continue;
       }
 
       this.display(`--- Battle ---\n${this.arena.fighter.name} (HP: ${this.arena.fighter.healthPool}) vs ${this.arena.wild.name} (HP: ${this.arena.wild.healthPool})`);
-      
+
       const action = await this.ask(`Action:\n1. Attack\n2. Item\n3. Flee\n4. Switch Pokemilton`);
-      
+
       let playerTurnOver = false;
       if (action === '1') {
-          this.display(this.arena.fighter.attack(this.arena.wild));
-          playerTurnOver = true;
+        this.display(this.arena.fighter.attack(this.arena.wild));
+        playerTurnOver = true;
       } else if (action === '2') {
-          playerTurnOver = await this.menuBattleItems();
+        playerTurnOver = await this.menuBattleItems();
       } else if (action === '3') {
-          const fleeMsg = this.arena.tryToFlee();
-          this.display(fleeMsg);
-          if (this.arena.status === 'quit') break;
-          playerTurnOver = true;
+        const fleeMsg = this.arena.tryToFlee();
+        this.display(fleeMsg);
+        if (this.arena.status === 'quit') break;
+        playerTurnOver = true;
       } else if (action === '4') {
-          const oldFighterName = this.arena.fighter.name;
-          const switchSuccess = await this.chooseFighterForBattle();
-          if (switchSuccess && this.arena.fighter.name !== oldFighterName) {
-            this.display(`${oldFighterName}, come back! Go, ${this.arena.fighter.name}!`);
-            playerTurnOver = true;
-          } else {
-            this.display(`Switch cancelled.`);
-          }
+        const oldFighterName = this.arena.fighter.name;
+        const switchSuccess = await this.chooseFighterForBattle();
+        if (switchSuccess && this.arena.fighter.name !== oldFighterName) {
+          this.display(`${oldFighterName}, come back! Go, ${this.arena.fighter.name}!`);
+          playerTurnOver = true;
+        } else {
+          this.display(`Switch cancelled.`);
+        }
       }
 
       if (playerTurnOver) {
+        this.arena.checkStatus(this.master);
+        if (this.arena.status === 'ongoing') {
+          this.display(this.arena.wildPokemiltonAction());
           this.arena.checkStatus(this.master);
-          if (this.arena.status === 'ongoing') {
-               this.display(this.arena.wildPokemiltonAction());
-               this.arena.checkStatus(this.master);
-          }
+        }
       }
     }
-    
+
     if (this.arena.status === "capture") {
       this.display(this.master.catchPokemilton(this.arena.wild));
     }
-    
+
     this.master.injectFighter(this.arena);
     this.display(this.world.addLog(this.arena.endBattle(this.master)));
   }
