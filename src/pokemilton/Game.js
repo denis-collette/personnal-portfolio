@@ -144,77 +144,78 @@ export default class Game {
     this.display(this.world.addLog(`A wild ${this.arena.wild.name} appeared!`));
 
     const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
-
+    
     if (choice !== '1') {
       const fleeMessage = this.arena.tryToFlee();
       this.display(fleeMessage);
-
+      
       if (fleeMessage === "You managed to flee!") {
         this.display(this.world.addLog("Successfully fled."));
         return;
       } else {
         this.display(this.world.addLog("Couldn't get away!"));
-
         const choseFighter = await this.chooseFighterForBattle();
-        if (!choseFighter) return; // All Pokemilton fainted, end encounter.
-
+        if (!choseFighter) return;
         this.display(this.arena.wildPokemiltonAction());
         this.arena.checkStatus(this.master);
       }
     }
 
-    // This block runs if you chose "Fight" initially
     if (!this.arena.fighter) {
       const choseFighter = await this.chooseFighterForBattle();
       if (!choseFighter) return;
     }
-
+    
     this.display(this.arena.startBattle());
 
-    // Main battle loop
-    while (["ongoing", "starting"].includes(this.arena.status)) { // LOOP WHILE ONGOING OR NEEDS A NEW FIGHTER
-
+    while (["ongoing", "starting"].includes(this.arena.status)) {
+      
       if (this.arena.status === "starting") {
         this.display(`${this.arena.fighter.name} has fainted!`);
         const choseNewFighter = await this.chooseFighterForBattle();
-        // If you can't choose a new one (all fainted), the loop will end.
         if (!choseNewFighter) {
-          this.arena.status = "loose";
-          break;
+            this.arena.status = "loose";
+            break;
         }
-        this.arena.status = "ongoing"; // Reset status to continue the battle
+        this.arena.status = "ongoing";
         this.display(`${this.arena.fighter.name}, go!`);
+        
+        // After switching, skip the player's action for this turn and
+        // proceed immediately to the wild Pokemilton's attack.
+        this.display(this.arena.wildPokemiltonAction());
+        this.arena.checkStatus(this.master);
+        continue;
       }
 
       this.display(`--- Battle ---\n${this.arena.fighter.name} (HP: ${this.arena.fighter.healthPool}) vs ${this.arena.wild.name} (HP: ${this.arena.wild.healthPool})`);
       const action = await this.ask(`Action:\n1. Attack\n2. Item\n3. Flee`);
-
+      
       let playerTurnOver = false;
       if (action === '1') {
-        this.display(this.arena.fighter.attack(this.arena.wild));
-        playerTurnOver = true;
+          this.display(this.arena.fighter.attack(this.arena.wild));
+          playerTurnOver = true;
       } else if (action === '2') {
-        playerTurnOver = await this.menuBattleItems();
+          playerTurnOver = await this.menuBattleItems();
       } else if (action === '3') {
-        const fleeMsg = this.arena.tryToFlee();
-        this.display(fleeMsg);
-        if (this.arena.status === 'quit') break;
-        playerTurnOver = true;
+          const fleeMsg = this.arena.tryToFlee();
+          this.display(fleeMsg);
+          if (this.arena.status === 'quit') break;
+          playerTurnOver = true;
       }
 
       if (playerTurnOver) {
-        this.arena.checkStatus(this.master);
-        if (this.arena.status === 'ongoing') {
-          this.display(this.arena.wildPokemiltonAction());
           this.arena.checkStatus(this.master);
-        }
+          if (this.arena.status === 'ongoing') {
+               this.display(this.arena.wildPokemiltonAction());
+               this.arena.checkStatus(this.master);
+          }
       }
     }
-
+    
     if (this.arena.status === "capture") {
       this.display(this.master.catchPokemilton(this.arena.wild));
     }
-
+    
     this.master.injectFighter(this.arena);
     this.display(this.world.addLog(this.arena.endBattle(this.master)));
   }
