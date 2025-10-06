@@ -1,14 +1,22 @@
 const students = ['al', 'ex', 'and', 'ré', 'rii', 'bas', 'tien', 'bry', 'an', 'char', 'lotte', 'den', 'is', 'émi', 'lie', 'emma', 'nuel', 'fré', 'déric', 'gui', 'llaume', 'hu', 'go', 'ja', 'âd', 'jam', 'aldinne', 'jus', 'tine', 'luc', 'as', 'mar', 'ie', 'tin', 'meh', 'di', 'naj', 'ib', 'nic', 'olas', 'pi', 'erre', 'quen', 'rob', 'in', 'sco', 'tt'];
 
 export default class Pokemilton {
-  constructor() {
+  constructor(level = 1) {
     this.name = this.generateRandomName();
-    this.level = 1;
+    this.level = level;
     this.experienceMeter = 0;
-    this.attackRange = this.getRandomNumber(4, 8);
-    this.defenseRange = this.getRandomNumber(1, 3);
-    this.healthPool = this.getRandomNumber(20, 30);
-    this.initialHealthPool = this.healthPool;
+
+    // Generate base stats first
+    const baseAttack = this.getRandomNumber(4, 8);
+    const baseDefense = this.getRandomNumber(1, 3);
+    const baseHealth = this.getRandomNumber(20, 30);
+
+    // Scale stats based on the level. Higher levels get significant boosts.
+    this.attackRange = baseAttack + Math.floor((level - 1) * 1.5);
+    this.defenseRange = baseDefense + (level - 1);
+    this.initialHealthPool = baseHealth + ((level - 1) * 5);
+    this.healthPool = this.initialHealthPool;
+    
     this.catchPhrase = this.generateCatchPhrase();
   }
 
