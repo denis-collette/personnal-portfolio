@@ -284,11 +284,28 @@ export default class Game {
     };
   }
 
+  getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  getWildLevelData(masterLevel) {
+    if (masterLevel === 1) return { minLvl: 1, maxLvl: 1 };
+
+    // Formula for scaling beyond Master Level 1
+    const minLvl = (masterLevel - 1) * 3 - 1;
+    const maxLvl = minLvl + 2;
+    return { minLvl, maxLvl };
+  }
+
   // --- BATTLE LOGIC ---
   // Regular wild encounter
   async startEncounter() {
     this.arena = new Arena();
-    this.arena.wild = new Pokemilton(); // Wild Pokemilton are still Level 1 for now
+
+    // Create a wild Pokemilton with a scaled level
+    const wildLevelData = this.getWildLevelData(this.master.masterLevel);
+    const wildLevel = this.getRandomNumber(wildLevelData.minLvl, wildLevelData.maxLvl);
+    this.arena.wild = new Pokemilton(wildLevel);
 
     const wild = this.arena.wild;
     const appearanceMessage = `A wild ${wild.name} appeared!\n(LVL: ${wild.level} | HP: ${wild.healthPool} | ATK: ${wild.attackRange} | DEF: ${wild.defenseRange})`;
@@ -296,7 +313,7 @@ export default class Game {
 
     const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
     if (choice === '1') {
-      await this.runBattle(this.arena.wild); // Calls the new reusable battle function
+      await this.runBattle(this.arena.wild);
     } else {
       this.display(this.world.addLog(this.arena.tryToFlee() === "You managed to flee!" ? "Successfully fled." : "Couldn't get away!"));
     }
@@ -306,17 +323,18 @@ export default class Game {
   async startChampionEncounter() {
     this.display(this.world.addLog(`A Champion has appeared to challenge you on Day ${this.world.day}!`));
     const choice = await this.ask("Will you accept the challenge?\n1. Fight!\n2. Decline");
-
     if (choice !== '1') {
       this.display(this.world.addLog("You declined the challenge. The Champion will be waiting."));
       return;
     }
 
     const champData = this.getChampionData(this.master.masterLevel);
-    
     const championTeam = [];
+
+    // Create the champion's team with scaled levels
     for (let i = 0; i < champData.size; i++) {
-      championTeam.push(new Pokemilton()); 
+      const champPokeLevel = this.getRandomNumber(champData.minLvl, champData.maxLvl);
+      championTeam.push(new Pokemilton(champPokeLevel));
     }
 
     this.display(`The Champion brings a team of ${champData.size} Pokémilton!`);
@@ -330,10 +348,9 @@ export default class Game {
         playerVictory = false;
         break;
       }
-      // Check to see if the player still has conscious Pokemilton
       if (!this.master.alive) {
-          playerVictory = false;
-          break;
+        playerVictory = false;
+        break;
       }
       this.display(`You defeated the Champion's ${champPoke.name}!`);
     }
