@@ -7,6 +7,7 @@ export default class Master {
     this.pokeballs = 10;
     this.coins = 50;
     this.alive = true;
+    this.masterLevel = 1;
   }
 
   showCollection() {

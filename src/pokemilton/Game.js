@@ -29,7 +29,24 @@ export default class Game {
   }
 
   save() {
-    this.savefile = { saved_on: new Date().toLocaleString(), Master: { name: this.master.name, collection: this.master.collection, healingItems: this.master.healingItems, reviveItems: this.master.reviveItems, pokeballs: this.master.pokeballs, coins: this.master.coins, alive: this.master.alive }, World: { day: this.world.day, log: this.world.log, status: true } };
+    this.savefile = { 
+      saved_on: new Date().toLocaleString(), 
+      Master: { 
+        name: this.master.name, 
+        collection: this.master.collection, 
+        healingItems: this.master.healingItems, 
+        reviveItems: this.master.reviveItems, 
+        pokeballs: this.master.pokeballs, 
+        coins: this.master.coins, 
+        alive: this.master.alive,
+        masterLevel: this.master.masterLevel
+      }, 
+      World: { 
+        day: this.world.day, 
+        log: this.world.log, 
+        status: true 
+      } 
+    };
     localStorage.setItem("pokemiltonSave", JSON.stringify(this.savefile, null, 2));
     this.display("Game saved!");
   }
