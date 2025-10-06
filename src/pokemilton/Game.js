@@ -29,23 +29,23 @@ export default class Game {
   }
 
   save() {
-    this.savefile = { 
-      saved_on: new Date().toLocaleString(), 
-      Master: { 
-        name: this.master.name, 
-        collection: this.master.collection, 
-        healingItems: this.master.healingItems, 
-        reviveItems: this.master.reviveItems, 
-        pokeballs: this.master.pokeballs, 
-        coins: this.master.coins, 
+    this.savefile = {
+      saved_on: new Date().toLocaleString(),
+      Master: {
+        name: this.master.name,
+        collection: this.master.collection,
+        healingItems: this.master.healingItems,
+        reviveItems: this.master.reviveItems,
+        pokeballs: this.master.pokeballs,
+        coins: this.master.coins,
         alive: this.master.alive,
         masterLevel: this.master.masterLevel
-      }, 
-      World: { 
-        day: this.world.day, 
-        log: this.world.log, 
-        status: true 
-      } 
+      },
+      World: {
+        day: this.world.day,
+        log: this.world.log,
+        status: true
+      }
     };
     localStorage.setItem("pokemiltonSave", JSON.stringify(this.savefile, null, 2));
     this.display("Game saved!");
@@ -238,100 +238,6 @@ export default class Game {
     return itemUsed;
   }
 
-  // --- BATTLE LOGIC ---
-  async startEncounter() {
-    this.arena = new Arena();
-    this.arena.wild = new Pokemilton();
-
-    const wild = this.arena.wild;
-    const appearanceMessage = `A wild ${wild.name} appeared!\n(LVL: ${wild.level} | HP: ${wild.healthPool} | ATK: ${wild.attackRange} | DEF: ${wild.defenseRange})`;
-    this.display(this.world.addLog(appearanceMessage));
-
-    const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
-
-    if (choice !== '1') {
-      const fleeMessage = this.arena.tryToFlee();
-      this.display(fleeMessage);
-
-      if (fleeMessage === "You managed to flee!") {
-        this.display(this.world.addLog("Successfully fled."));
-        return;
-      } else {
-        this.display(this.world.addLog("Couldn't get away!"));
-        const choseFighter = await this.chooseFighterForBattle();
-        if (!choseFighter) return;
-
-        this.display(this.arena.wildPokemiltonAction());
-        this.arena.checkStatus(this.master);
-      }
-    }
-
-    if (!this.arena.fighter) {
-      const choseFighter = await this.chooseFighterForBattle();
-      if (!choseFighter) return;
-    }
-
-    this.display(this.arena.startBattle());
-
-    while (["ongoing", "starting"].includes(this.arena.status)) {
-      if (this.arena.status === "starting") {
-        this.display(`${this.arena.fighter.name} has fainted!`);
-        const choseNewFighter = await this.chooseFighterForBattle();
-        if (!choseNewFighter) {
-          this.arena.status = "loose";
-          break;
-        }
-        this.arena.status = "ongoing";
-        this.display(`${this.arena.fighter.name}, go!`);
-
-        this.display(this.arena.wildPokemiltonAction());
-        this.arena.checkStatus(this.master);
-        continue;
-      }
-
-      this.display(`--- Battle ---\n${this.arena.fighter.name} (HP: ${this.arena.fighter.healthPool}) vs ${this.arena.wild.name} (HP: ${this.arena.wild.healthPool})`);
-
-      const action = await this.ask(`Action:\n1. Attack\n2. Item\n3. Flee\n4. Switch Pokemilton`);
-
-      let playerTurnOver = false;
-      if (action === '1') {
-        this.display(this.arena.fighter.attack(this.arena.wild));
-        playerTurnOver = true;
-      } else if (action === '2') {
-        playerTurnOver = await this.menuBattleItems();
-      } else if (action === '3') {
-        const fleeMsg = this.arena.tryToFlee();
-        this.display(fleeMsg);
-        if (this.arena.status === 'quit') break;
-        playerTurnOver = true;
-      } else if (action === '4') {
-        const oldFighterName = this.arena.fighter.name;
-        const switchSuccess = await this.chooseFighterForBattle();
-        if (switchSuccess && this.arena.fighter.name !== oldFighterName) {
-          this.display(`${oldFighterName}, come back! Go, ${this.arena.fighter.name}!`);
-          playerTurnOver = true;
-        } else {
-          this.display(`Switch cancelled.`);
-        }
-      }
-
-      if (playerTurnOver) {
-        this.arena.checkStatus(this.master);
-        if (this.arena.status === 'ongoing') {
-          this.display(this.arena.wildPokemiltonAction());
-          this.arena.checkStatus(this.master);
-        }
-      }
-    }
-
-    if (this.arena.status === "capture") {
-      this.display(this.master.catchPokemilton(this.arena.wild));
-    }
-
-    this.master.injectFighter(this.arena);
-    this.display(this.world.addLog(this.arena.endBattle(this.master)));
-  }
-
   async chooseFighterForBattle() {
     while (true) {
       // Check if there are any usable Pokemilton left
@@ -355,32 +261,182 @@ export default class Game {
     }
   }
 
+  getChampionData(masterLevel) {
+    if (masterLevel === 1) return { size: 2, minLvl: 3, maxLvl: 4 };
+    if (masterLevel === 2) return { size: 3, minLvl: 5, maxLvl: 7 };
+    if (masterLevel === 3) return { size: 4, minLvl: 8, maxLvl: 11 };
+    if (masterLevel === 4) return { size: 5, minLvl: 12, maxLvl: 15 };
+
+    // For level 5 and beyond, we calculate the levels iteratively
+    // Start with the stats from the last defined level (Master Level 4)
+    let lastMaxLvl = 15;
+
+    // Loop from level 5 up to the player's current masterLevel
+    for (let i = 5; i <= masterLevel; i++) {
+      let currentMinLvl = lastMaxLvl + 1;
+      lastMaxLvl = currentMinLvl + 3;
+    }
+
+    return {
+      size: 6, // Team size is capped at 6 for all higher levels
+      minLvl: lastMaxLvl - 2, // The final minLvl is the final maxLvl - 2 (since the gap is 3)
+      maxLvl: lastMaxLvl
+    };
+  }
+
+  // --- BATTLE LOGIC ---
+  // Regular wild encounter
+  async startEncounter() {
+    this.arena = new Arena();
+    this.arena.wild = new Pokemilton(); // Wild Pokemilton are still Level 1 for now
+
+    const wild = this.arena.wild;
+    const appearanceMessage = `A wild ${wild.name} appeared!\n(LVL: ${wild.level} | HP: ${wild.healthPool} | ATK: ${wild.attackRange} | DEF: ${wild.defenseRange})`;
+    this.display(this.world.addLog(appearanceMessage));
+
+    const choice = await this.ask("What will you do?\n1. Fight\n2. Flee");
+    if (choice === '1') {
+      await this.runBattle(this.arena.wild); // Calls the new reusable battle function
+    } else {
+      this.display(this.world.addLog(this.arena.tryToFlee() === "You managed to flee!" ? "Successfully fled." : "Couldn't get away!"));
+    }
+  }
+
+  // Champion "boss battle" encounter.
+  async startChampionEncounter() {
+    this.display(this.world.addLog(`A Champion has appeared to challenge you on Day ${this.world.day}!`));
+    const choice = await this.ask("Will you accept the challenge?\n1. Fight!\n2. Decline");
+
+    if (choice !== '1') {
+      this.display(this.world.addLog("You declined the challenge. The Champion will be waiting."));
+      return;
+    }
+
+    const champData = this.getChampionData(this.master.masterLevel);
+    
+    const championTeam = [];
+    for (let i = 0; i < champData.size; i++) {
+      championTeam.push(new Pokemilton()); 
+    }
+
+    this.display(`The Champion brings a team of ${champData.size} Pokémilton!`);
+
+    let playerVictory = true;
+    for (const champPoke of championTeam) {
+      this.display(`The Champion sends out ${champPoke.name}! (LVL: ${champPoke.level})`);
+      const battleResult = await this.runBattle(champPoke);
+
+      if (battleResult === 'loss' || battleResult === 'fled') {
+        playerVictory = false;
+        break;
+      }
+      // Check to see if the player still has conscious Pokemilton
+      if (!this.master.alive) {
+          playerVictory = false;
+          break;
+      }
+      this.display(`You defeated the Champion's ${champPoke.name}!`);
+    }
+
+    if (playerVictory) {
+      this.master.masterLevel++;
+      const reward = 100 * (this.master.masterLevel - 1);
+      this.master.coins += reward;
+      this.display(this.world.addLog(`Victory! You defeated the Champion and earned ${reward} coins!`));
+      this.display(`Your Master Level has increased to ${this.master.masterLevel}! The world has grown stronger...`);
+    } else {
+      this.display(this.world.addLog("You were defeated by the Champion. Train harder for next time!"));
+    }
+  }
+
+  // Core battle logic.
+  async runBattle(opponent) {
+    this.arena = new Arena();
+    this.arena.wild = opponent; // The opponent can be a wild poke or a champion's poke
+
+    const choseFighter = await this.chooseFighterForBattle();
+    if (!choseFighter) return 'loss'; // Can't fight if you have no one
+
+    this.display(this.arena.startBattle());
+
+    while (["ongoing", "starting"].includes(this.arena.status)) {
+      if (this.arena.status === "starting") {
+        this.display(`${this.arena.fighter.name} has fainted!`);
+        const choseNewFighter = await this.chooseFighterForBattle();
+        if (!choseNewFighter) { this.arena.status = "loose"; break; }
+
+        this.arena.status = "ongoing";
+        this.display(`${this.arena.fighter.name}, go!`);
+        this.display(this.arena.wildPokemiltonAction());
+        this.arena.checkStatus(this.master);
+        continue;
+      }
+
+      this.display(`--- Battle ---\n${this.arena.fighter.name} (HP: ${this.arena.fighter.healthPool}) vs ${this.arena.wild.name} (HP: ${this.arena.wild.healthPool})`);
+      const action = await this.ask(`Action:\n1. Attack\n2. Item\n3. Flee\n4. Switch`);
+
+      let playerTurnOver = false;
+      if (action === '1') { this.display(this.arena.fighter.attack(this.arena.wild)); playerTurnOver = true; }
+      else if (action === '2') { playerTurnOver = await this.menuBattleItems(); }
+      else if (action === '3') {
+        const fleeMsg = this.arena.tryToFlee(); this.display(fleeMsg);
+        if (this.arena.status === 'quit') break;
+        playerTurnOver = true;
+      }
+      else if (action === '4') {
+        const oldFighterName = this.arena.fighter.name;
+        if (await this.chooseFighterForBattle() && this.arena.fighter.name !== oldFighterName) {
+          this.display(`${oldFighterName}, come back! Go, ${this.arena.fighter.name}!`);
+          playerTurnOver = true;
+        } else { this.display(`Switch cancelled.`); }
+      }
+
+      if (playerTurnOver) {
+        this.arena.checkStatus(this.master);
+        if (this.arena.status === 'ongoing') {
+          this.display(this.arena.wildPokemiltonAction());
+          this.arena.checkStatus(this.master);
+        }
+      }
+    }
+
+    if (this.arena.status === "capture") this.display(this.master.catchPokemilton(this.arena.wild));
+    this.master.injectFighter(this.arena);
+
+    // Return the result of the battle for the champion loop
+    if (this.arena.status === 'loose') return 'loss';
+    if (this.arena.status === 'quit') return 'fled';
+    return 'win'; // Includes win by knockout or capture
+  }
+
   // --- MAIN GAME RUNNER ---
   async run() {
     let playAgain = true;
     while (playAgain) {
-      this.master = new Master();
-      this.world = new World();
+      this.master = new Master(); this.world = new World();
       this.load();
 
       if (this.savefile?.Master?.name) {
-        const choice = await this.ask(`Welcome back, ${this.savefile.Master.name}!\n1. Continue\n2. New Game`);
-        if (choice === '1') {
-          Object.assign(this.master, this.savefile.Master);
-          Object.assign(this.world, this.savefile.World);
+        if ((await this.ask(`Welcome back, ${this.savefile.Master.name}!\n1. Continue\n2. New Game`)) === '1') {
+          Object.assign(this.master, this.savefile.Master); Object.assign(this.world, this.savefile.World);
         } else { await this.askForName(); }
       } else { await this.askForName(); }
 
       if (this.master.collection.length === 0) await this.proposeFirstPokemilton();
-
       this.display(`----------\nGet ready, ${this.master.name}!\nYour team:\n` + this.master.showCollection());
 
       while (this.world.status) {
         await this.menuDay();
         if (!this.world.status) break;
 
-        if (this.world.randomizeEvent()) await this.startEncounter();
-        else this.display(this.world.addLog("The day passed peacefully."));
+        if (this.world.day > 1 && this.world.day % 10 === 9) {
+          await this.startChampionEncounter();
+        } else {
+          if (this.world.randomizeEvent()) await this.startEncounter();
+          else this.display(this.world.addLog("The day passed peacefully."));
+        }
+
+        if (!this.world.status) break; // Check if player quit during encounter
 
         this.display(this.world.oneDayPasses());
 
@@ -391,10 +447,8 @@ export default class Game {
       }
 
       this.display("--- GAME OVER ---");
-      const finalChoice = await this.ask("Play again?\n1. New Game\n2. Load from Save\n3. Exit");
-      if (finalChoice === '3') {
-        playAgain = false;
-        this.display("Thanks for playing!");
+      if ((await this.ask("Play again?\n1. New Game\n2. Load from Save\n3. Exit")) === '3') {
+        playAgain = false; this.display("Thanks for playing!");
       }
     }
   }
