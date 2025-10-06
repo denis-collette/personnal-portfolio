@@ -28,11 +28,10 @@ export default class Pokemilton {
   }
 
   attack(defender) {
-    const damage = Math.max(0, this.getRandomNumber(this.attackRange, this.attackRange * this.level) - defender.defenseRange);
+    // We'll use the level to make attacks slightly stronger
+    const damage = Math.max(0, this.getRandomNumber(this.attackRange, this.attackRange + this.level) - defender.defenseRange);
     defender.healthPool -= damage;
-
     let message = `${this.name} attacked ${defender.name} and dealt ${damage} damage!`;
-
     if (defender.healthPool <= 0) {
       defender.healthPool = 0;
       message += `\n${defender.name} was knocked out!`;
@@ -41,18 +40,27 @@ export default class Pokemilton {
   }
 
   gainExperience(opponentLevel) {
+    // XP gain is based on the opponent's level
     const experienceGain = this.getRandomNumber(5, 10) * opponentLevel;
     this.experienceMeter += experienceGain;
-
     let message = `${this.name} gained ${experienceGain} experience points!`;
 
-    if (this.experienceMeter >= this.level * 20) {
-      message += `\n${this.evolve()}`; // Append the evolution message
+    // Check if the Pokemilton can level up
+    const xpForNextLevel = this.getXpForNextLevel();
+    if (this.experienceMeter >= xpForNextLevel) {
+      this.experienceMeter -= xpForNextLevel; // Subtract the cost and keep the remainder
+      message += `\n${this.levelUp()}`; // Call the level up method
     }
     return message;
   }
 
-  evolve(levels = 1) {
+  // This calculates how much XP is needed for the next level
+  getXpForNextLevel() {
+    // A formula that makes it progressively harder to level up
+    return Math.floor(20 * (this.level ** 1.5));
+  }
+
+  levelUp(levels = 1) {
     this.level += levels;
     const attackIncrease = this.getRandomNumber(1, 3) * levels;
     const defenseIncrease = this.getRandomNumber(1, 2) * levels;
@@ -61,9 +69,9 @@ export default class Pokemilton {
     this.attackRange += attackIncrease;
     this.defenseRange += defenseIncrease;
     this.initialHealthPool += healthIncrease;
-    this.healthPool = this.initialHealthPool; // Fully heal on evolution
+    this.healthPool = this.initialHealthPool; // Fully heal on level up
 
-    return `${this.name} evolved to Level ${this.level}!`;
+    return `Ding! ${this.name} grew to Level ${this.level}!`;
   }
 
   sayCatchPhrase() {
