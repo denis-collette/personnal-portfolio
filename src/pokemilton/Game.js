@@ -416,9 +416,11 @@ export default class Game {
         }
       }
     }
-
+    
+    const endMessage = this.arena.endBattle(this.master);
     if (this.arena.status === "capture") this.display(this.master.catchPokemilton(this.arena.wild));
     this.master.injectFighter(this.arena);
+    this.display(this.world.addLog(endMessage));
 
     // Return the result of the battle for the champion loop
     if (this.arena.status === 'loose') return 'loss';
