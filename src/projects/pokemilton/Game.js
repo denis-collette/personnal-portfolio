@@ -416,7 +416,7 @@ export default class Game {
         }
       }
     }
-    
+
     const endMessage = this.arena.endBattle(this.master);
     if (this.arena.status === "capture") this.display(this.master.catchPokemilton(this.arena.wild));
     this.master.injectFighter(this.arena);

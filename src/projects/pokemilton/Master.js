@@ -17,7 +17,7 @@ export default class Master {
     let collectionString = "";
     for (let i = 0; i < this.collection.length; i++) {
       const p = this.collection[i];
-      
+
       const xpNeeded = p.getXpForNextLevel();
       collectionString += `${i + 1}. ${p.name} | LVL: ${p.level} | HP: ${p.healthPool}/${p.initialHealthPool} | XP: ${p.experienceMeter}/${xpNeeded} | ATK: ${p.attackRange} | DEF: ${p.defenseRange}\n`;
     }

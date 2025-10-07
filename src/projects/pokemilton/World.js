@@ -2,7 +2,7 @@ export default class World {
   constructor() {
     this.day = 1;
     this.log = [];
-    this.status = true; 
+    this.status = true;
   }
 
   displayLog() {

@@ -1,5 +1,3 @@
-import Pokemilton from './Pokemilton.js';
-
 export default class Arena {
   constructor() {
     this.fighter = null;

@@ -1,6 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PokemiltonGame from "../components/PokemiltonGame.astro";
+import Didlycthulhudoo from "../components/Didlycthulhudoo.astro";
+// Project links
+// Pokemilton: https://github.com/denis-collette/Pokemilton
+// Didlycthulhudoo: https://github.com/denis-collette/Didlycthulhudo
+// Narratica: https://github.com/denis-collette/Narratica-MountainProject
 ---
 
 <Layout title="My Projects | Denis Collette">
@@ -30,6 +35,11 @@ import PokemiltonGame from "../components/PokemiltonGame.astro";
               >Pokemilton Game</a
             >
             <a
+              href="#didlycthulhudoo"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+              >Didlycthulhudoo</a
+            >
+            <a
               href="#more-projects"
               class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
               >More Coming Soon</a
@@ -44,11 +54,52 @@ import PokemiltonGame from "../components/PokemiltonGame.astro";
         <h2 class="text-3xl font-bold text-center text-indigo-400 mb-4">
           Pokemilton Game
         </h2>
-        <p class="text-center text-gray-300 max-w-2xl mx-auto mb-12">
+        <p class="text-center text-gray-300 max-w-2xl mx-auto mb-4">
           An interactive version of a terminal-based RPG I built during my
           training.
         </p>
+        <p class="text-center text-indigo-400 mb-8">
+          <a
+            href="https://github.com/denis-collette/Pokemilton"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:underline"
+          >
+            Discover the original code on GitHub &rarr;
+          </a>
+        </p>
         <PokemiltonGame />
+      </div>
+    </section>
+
+    <section
+      id="didlycthulhudoo"
+      class="py-16 bg-gray-900 text-white scroll-mt-16"
+    >
+      <div class="container mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center text-indigo-400 mb-4">
+          Didlycthulhudoo
+        </h2>
+        <p class="text-center text-gray-300 max-w-2xl mx-auto mb-4">
+          An event scheduling application inspired by Doodle, built with React.
+          This project demonstrates component-based architecture, state
+          management, and handling user interactions.
+        </p>
+        <p class="text-center text-indigo-400 mb-8">
+          <a
+            href="https://github.com/denis-collette/Didlycthulhudo"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:underline"
+          >
+            Discover the original code on GitHub &rarr;
+          </a>
+        </p>
+        <div
+          class="bg-gray-900 text-white p-4 md:p-6 rounded-lg shadow-xl font-mono max-w-3xl mx-auto"
+        >
+          <Didlycthulhudoo />
+        </div>
       </div>
     </section>
 

@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+:root {
+  --light-pink: #ffbdd6;
+  --pink: #ff68b9;
+  --light-green: #c4f3b1;
+  --green: #85f169;
+  --black-brown: #35231d;
+}
+
+.didly-app-wrapper {
+  background-color: var(--light-pink);
+  color: var(--black-brown);
+  font-family: 'Patrick Hand', sans-serif;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.didly-app-wrapper button {
+  color: var(--pink);
+  background-color: var(--light-green);
+  border: 1.5px solid var(--light-green);
+  border-radius: 7px;
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.didly-app-wrapper button:hover {
+  border-color: var(--black-brown);
+}
+
+.didly-app-wrapper h1,
+.didly-app-wrapper h2 {
+  color: var(--green);
+  -webkit-text-stroke: 0.5px var(--black-brown);
+}
+
+.didly-app-wrapper .container {
+  max-width: 100%; 
+  width: 100%;
+  margin: 0 auto;
+}
+
+.didly-app-wrapper header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  flex-wrap: wrap; 
+  margin-bottom: 8px;
+}
+
+.didly-app-wrapper header a {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.didly-app-wrapper header img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.didly-app-wrapper header h1 {
+  font-family: 'Rubik Wet Paint', cursive;
+  font-size: 1.5rem;
+}
+
+.didly-app-wrapper header nav ul {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.didly-app-wrapper header nav li a {
+  display: block;
+  color: var(--pink);
+  background-color: var(--light-green);
+  border: 1.5px solid var(--light-green);
+  border-radius: 7px;
+  margin-left: 8px;
+  padding: 5px 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.didly-app-wrapper header nav li a:hover {
+  border-color: var(--black-brown);
+}
+
+.didly-app-wrapper header nav li a:visited {
+  color: var(--pink);
+}
+
+.didly-app-wrapper .DisplayEvents {
+  background-color: var(--light-green);
+  border: 1.5px solid var(--black-brown);
+  border-radius: 7px;
+  margin-top: 1rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.didly-app-wrapper .EventsList {
+  padding: 0;
+  color: var(--pink);
+}
+
+.didly-app-wrapper .EventsList li {
+  text-align: left;
+  list-style: none;
+  margin: 8px 0;
+}
+
+.didly-app-wrapper .EventsList li a {
+  text-decoration: none;
+  padding: 2px 4px;
+}
+
+.didly-app-wrapper .EventsList li a:hover {
+  border: 1px solid var(--black-brown);
+  border-radius: 7px;
+}
+
+.didly-app-wrapper .results table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.didly-app-wrapper .results th,
+.didly-app-wrapper .results td {
+  border: 1.5px solid var(--black-brown);
+  padding: 8px;
+}
+
+.didly-app-wrapper .Intro {
+  text-align: center;
+}
+
+.didly-app-wrapper .Intro h2 {
+  text-align: center;
+}
+
+.didly-app-wrapper .Turtle {
+  width: 150px;
+  cursor: pointer;
+  display: block;
+  margin: 1rem auto;
+}
+
+.didly-app-wrapper .error404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 0;
+}

@@ -16,7 +16,7 @@ export default class Pokemilton {
     this.defenseRange = baseDefense + (level - 1);
     this.initialHealthPool = baseHealth + ((level - 1) * 5);
     this.healthPool = this.initialHealthPool;
-    
+
     this.catchPhrase = this.generateCatchPhrase();
   }
 
