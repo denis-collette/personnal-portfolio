@@ -53,7 +53,7 @@
     }
 
     gameOutput.innerHTML = "";
-
+    let isFirstPrompt = true;
     let gameInstance;
 
     const display = (text) => {
@@ -66,7 +66,11 @@
 
     const ask = (question) => {
       display(question);
-      userInput.focus();
+      if (!isFirstPrompt) {
+        userInput.focus();
+      }
+      isFirstPrompt = false;
+
       return new Promise((resolve) => {
         const onButtonClick = () => {
           const answer = userInput.value;
@@ -88,6 +92,7 @@
     };
 
     function startGame() {
+      isFirstPrompt = true; 
       gameInstance = new Game(display, ask);
       gameInstance.run();
     }
