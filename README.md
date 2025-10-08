@@ -4,6 +4,9 @@ See it live at: <https://denis-collette.netlify.app/>.
 
 This is the official repository for my personal portfolio website, built with Astro and Tailwind CSS. The goal of this project is to showcase my skills, projects, and provide an interactive way to view my professional experience.
 
+**For the Narratica project:**
+[More information on the librivox API used specially for this portfolio.](https://librivox.org/api/info)
+
 ## 🚀 Project Setup
 
 1. **Clone the repository (or download the files):**
@@ -41,3 +44,23 @@ This is the official repository for my personal portfolio website, built with As
 * **Interactive CV:** An innovative and engaging way to present my resume.
 * **Project Showcase:** A gallery of my development work.
 * **Contact Information:** Ways to get in touch with me.
+
+<!-- 
+narratica/
+- assets/
+-- favicon.ico
+- components/
+-- AudioPlayerBar.tsx
+-- Card.tsx
+-- NavBar.tsx
+-- SearchBar.tsx
+-- SkeletonCard.tsx
+- safeZone/
+-- useAnalyser.ts
+-- Visualizer.tsx
+- styles/
+-- narratica.css
+- App.jsx
+- BookDetail.jsx
+- Library.jsx
+-->

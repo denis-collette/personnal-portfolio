@@ -2,10 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import PokemiltonGame from "../components/PokemiltonGame.astro";
 import Didlycthulhudoo from "../components/Didlycthulhudoo.astro";
-// Project links
-// Pokemilton: https://github.com/denis-collette/Pokemilton
-// Didlycthulhudoo: https://github.com/denis-collette/Didlycthulhudo
-// Narratica: https://github.com/denis-collette/Narratica-MountainProject
+import Narratica from "../components/Narratica.astro";
 ---
 
 <Layout title="My Projects | Denis Collette">
@@ -39,6 +36,11 @@ import Didlycthulhudoo from "../components/Didlycthulhudoo.astro";
         >
           <nav class="flex space-x-4 sm:space-x-6 text-sm font-medium">
             <a
+              href="#narratica"
+              class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
+              >Narratica</a
+            >
+            <a
               href="#pokemilton"
               class="text-gray-600 hover:text-indigo-600 transition-colors whitespace-nowrap font-bold"
               >Pokemilton Game</a
@@ -57,6 +59,37 @@ import Didlycthulhudoo from "../components/Didlycthulhudoo.astro";
         </div>
       </div>
     </div>
+
+    <section id="narratica" class="py-16 bg-gray-900 text-white scroll-mt-16">
+      <div class="container mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center text-indigo-400 mb-4">
+          Narratica
+        </h2>
+        <p class="text-center text-gray-300 max-w-2xl mx-auto mb-4">
+          An audiobook listening platform based on Spotify. I took the lead
+          developer hat and supervised the project but I also made the database and the
+          backend setup and sketching, investigate the deployement possibilities
+          (we used AWS) and I completely create the audio visualizer in the
+          frontend part (the easter egg). This was the final group project made
+          during my training at BeCode.
+        </p>
+        <p class="text-center text-indigo-400 mb-8">
+          <a
+            href="https://github.com/denis-collette/Narratica-MountainProject"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:underline"
+          >
+            Discover the original code on GitHub &rarr;
+          </a>
+        </p>
+        <div
+          class="bg-gray-900 text-white p-4 md:p-6 rounded-lg shadow-xl font-mono max-w-3xl mx-auto"
+        >
+          <Narratica />
+        </div>
+      </div>
+    </section>
 
     <section id="pokemilton" class="py-16 bg-gray-900 text-white scroll-mt-16">
       <div class="container mx-auto px-4 sm:px-6">
