@@ -184,7 +184,7 @@ export default function App() {
   const renderCurrentPage = () => {
     switch (view.page) {
       case 'profile':
-        return <Profile showLibrary={showLibrary} />;
+        return <Profile showLibrary={showLibrary} showBookDetail={showBookDetail} />;
       case 'bookDetail':
         return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} />;
       case 'visualizer':

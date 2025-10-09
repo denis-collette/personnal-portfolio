@@ -6,21 +6,11 @@ const mockUser = {
   email: "demo@narratica.app",
   first_name: "Alex",
   last_name: "River",
-  date_joined: "2024-10-09T10:00:00Z",
+  date_joined: "2024-01-01T10:00:00Z",
   profile_img: "https://github.com/shadcn.png",
 };
 
-const mockFavoriteBooks = [
-  { id: '1948', title: 'The Adventures of Sherlock Holmes', authorName: 'Arthur Conan Doyle', url_image: 'https://archive.org/download/sherlock_holmes_2302_librivox/holmes_2302.jpg' },
-  { id: '244', title: 'The Call of the Wild', authorName: 'Jack London', url_image: 'https://archive.org/download/call_wild_2208_librivox/callwild_2208.jpg' },
-  { id: '1260', title: 'Dracula', authorName: 'Bram Stoker', url_image: 'https://archive.org/download/dracula_2303_librivox/dracula_2303.jpg' },
-  { id: '158', title: 'Moby Dick', authorName: 'Herman Melville', url_image: 'https://archive.org/download/moby_dick_2201_librivox/mobydick_2201.jpg' }
-];
-
-const mockFavoriteAuthors = [{ id: 1, name: "Arthur Conan Doyle" }, { id: 2, name: "Jack London" }];
-const mockFavoriteNarrators = [{ id: 1, name: "David Clarke" }, { id: 2, name: "John Greenman" }];
-
-export default function Profile({ showLibrary }) {
+export default function Profile({ showLibrary, showBookDetail }) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     username: mockUser.username,
@@ -28,6 +18,7 @@ export default function Profile({ showLibrary }) {
     last_name: mockUser.last_name,
   });
   const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const [favoriteAuthors, setFavoriteAuthors] = useState([]);
   const [isLoadingBooks, setIsLoadingBooks] = useState(true);
 
   useEffect(() => {
@@ -44,14 +35,31 @@ export default function Profile({ showLibrary }) {
 
       try {
         const results = await Promise.all(bookPromises);
-        const booksWithAuthors = results.map(result => {
-          const book = result.books[0];
-          return {
-            ...book,
-            authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', ')
-          };
+        let booksData = results.map(result => result.books[0]);
+
+        const coverPromises = booksData.map(book => {
+          if (!book.url_rss) return Promise.resolve(null);
+          return fetch('/api/librivox', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rss_url: book.url_rss })
+          }).then(res => res.json());
         });
-        setFavoriteBooks(booksWithAuthors);
+
+        const coverResults = await Promise.all(coverPromises);
+
+        const finalBooks = booksData.map((book, index) => ({
+          ...book,
+          authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
+          display_image: coverResults[index]?.imageUrl || book.url_image_archive
+        }));
+
+        setFavoriteBooks(finalBooks);
+
+        const authors = finalBooks.flatMap(book => book.authors.map(a => `${a.first_name} ${a.last_name}`));
+        const uniqueAuthors = [...new Set(authors)];
+        setFavoriteAuthors(uniqueAuthors);
+
       } catch (error) {
         console.error("Failed to fetch favorite books for profile:", error);
       } finally {
@@ -118,17 +126,23 @@ export default function Profile({ showLibrary }) {
       <section className="mt-10">
         <h2 className="text-3xl font-semibold mb-4">Your Favorites</h2>
         <h3 className="text-xl font-bold text-indigo-400 mb-3">Favorite Books</h3>
-        
+
         {isLoadingBooks ? (
           <p>Loading favorite books...</p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             {favoriteBooks.map(book => (
-              <div key={book.id} className="text-center">
-                <img src={book.url_image_archive?.replace(/^http:/, 'https')} alt={book.title} className="aspect-square object-cover rounded-md shadow-lg" />
+              <button key={book.id} onClick={() => showBookDetail(book.id)} className="text-center group">
+                <div className="aspect-square overflow-hidden rounded-md shadow-lg">
+                  <img
+                    src={book.display_image?.replace(/^http:/, 'https')}
+                    alt={book.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
                 <p className="font-bold mt-2 text-sm truncate">{book.title}</p>
                 <p className="text-xs text-gray-400 truncate">{book.authorName}</p>
-              </div>
+              </button>
             ))}
           </div>
         )}
@@ -136,11 +150,13 @@ export default function Profile({ showLibrary }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white/5 p-4 rounded-lg">
             <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Authors</h3>
-            <ul className="list-disc list-inside space-y-1">{mockFavoriteAuthors.map(a => <li key={a.id}>{a.name}</li>)}</ul>
+            <ul className="list-disc list-inside space-y-1">
+              {favoriteAuthors.map(name => <li key={name}>{name}</li>)}
+            </ul>
           </div>
           <div className="bg-white/5 p-4 rounded-lg">
             <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Narrators</h3>
-            <ul className="list-disc list-inside space-y-1">{mockFavoriteNarrators.map(n => <li key={n.id}>{n.name}</li>)}</ul>
+            <p className="text-sm text-gray-400 italic">(Narrator data is not available in this view)</p>
           </div>
         </div>
       </section>
