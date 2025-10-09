@@ -14,7 +14,7 @@ interface Props {
 }
 
 const Card = ({ book }: Props) => {
-  const imageUrl = book.url_image || book.cover_art_jpg;
+  const imageUrl = book.display_image || book.url_image || book.cover_art_jpg;
   const secureImageUrl = imageUrl?.replace(/^http:\/\//i, 'https://');
 
   return (

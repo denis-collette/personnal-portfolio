@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './styles/narratica.css';
 import NavBar from './components/NavBar.tsx';
 import AudioPlayerBar from './components/AudioPlayerBar.tsx';
@@ -10,18 +10,20 @@ import Profile from './components/Profile.jsx';
 const PAGE_SIZE = 20;
 
 export default function App() {
-  // --- STATE MANAGEMENT ---
   const [view, setView] = useState({ page: 'library', id: null });
   const [activeSong, setActiveSong] = useState(null);
   const [playlist, setPlaylist] = useState([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const audioRef = useRef(null);
-  const [books, setBooks] = useState([]);
   const [currentBookDetails, setCurrentBookDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [paginatedBooks, setPaginatedBooks] = useState([]);
+  const [favoriteBooks, setFavoriteBooks] = useState([]);
+
   const [favoriteIds, setFavoriteIds] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedFavorites = localStorage.getItem('narratica_favorites');
@@ -29,59 +31,8 @@ export default function App() {
     }
     return new Set();
   });
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
-  // --- HOOKS for INITIALIZATION and DATA FETCHING ---
-  const fetchAndDisplayFavorites = async () => {
-    setIsLoading(true);
-    const idsToFetch = Array.from(favoriteIds);
-
-    if (idsToFetch.length === 0) {
-      setBooks([]);
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const bookPromises = idsToFetch.map(id =>
-        fetch('/api/librivox', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id })
-        }).then(res => res.json())
-      );
-      const results = await Promise.all(bookPromises);
-      let favoriteBooksData = results.map(result => result.books[0]);
-
-      const coverPromises = favoriteBooksData.map(book => {
-        if (!book.url_rss) return Promise.resolve(null);
-        return fetch('/api/librivox', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rss_url: book.url_rss })
-        }).then(res => res.json());
-      });
-      const coverResults = await Promise.all(coverPromises);
-
-      const finalFavoriteBooks = favoriteBooksData.map((book, index) => ({
-        ...book,
-        authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
-        display_image: coverResults[index]?.imageUrl || book.url_image_archive
-      }));
-
-      setBooks(finalFavoriteBooks);
-    } catch (error) {
-      console.error("Failed to fetch all favorite books:", error);
-      setBooks([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    localStorage.setItem('narratica_favorites', JSON.stringify(Array.from(favoriteIds)));
-  }, [favoriteIds]);
-
+  // --- HOOKS ---
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
@@ -90,81 +41,93 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (showFavoritesOnly) return;
+    localStorage.setItem('narratica_favorites', JSON.stringify(Array.from(favoriteIds)));
+  }, [favoriteIds]);
 
-    const fetchCoverImages = async (bookList) => {
-      for (const book of bookList) {
-        if (book.url_rss) {
-          try {
-            const response = await fetch('/api/librivox', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ rss_url: book.url_rss })
-            });
-            const data = await response.json();
-            if (data.imageUrl) {
-              setBooks(currentBooks =>
-                currentBooks.map(b =>
-                  b.id === book.id ? { ...b, url_image: data.imageUrl } : b
-                )
-              );
-            }
-          } catch (err) {
-            console.error(`Failed to fetch cover for book ID ${book.id}:`, err);
-          }
-        }
-      }
-    };
-
+  useEffect(() => {
+    if (showFavoritesOnly || view.page !== 'library') return;
     const fetchData = async () => {
       setIsLoading(true);
-      if (view.page === 'library') setCurrentBookDetails(null);
-
       try {
-        if (view.page === 'library') {
-          const response = await fetch('/api/librivox', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sort_order: 'date_added',
-              limit: PAGE_SIZE,
-              offset: offset,
-              title: searchQuery ? `^${searchQuery}` : undefined
-            })
-          });
-          if (!response.ok) throw new Error(`API Error: ${response.status}`);
-          const data = await response.json();
-          const initialBooks = data.books || [];
-          setBooks(initialBooks);
-          if (initialBooks.length > 0) fetchCoverImages(initialBooks);
-
-        } else if (view.page === 'bookDetail' && view.id) {
-          const bookResponse = await fetch('/api/librivox', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: view.id })
-          });
-          const bookData = await bookResponse.json();
-          if (bookData.books && bookData.books.length > 0) {
-            const details = bookData.books[0];
-            if (details.url_rss) {
-              const rssToJsonApi = `https://api.rss2json.com/v1/api.json?rss_url=`;
-              const rssResponse = await fetch(rssToJsonApi + encodeURIComponent(details.url_rss));
-              const rssData = await rssResponse.json();
-              if (rssData.feed?.image) details.rssImage = rssData.feed.image;
-              if (rssData.items) {
-                details.tracks = rssData.items.map((item, i) => ({ id: i, title: item.title, mp3: item.enclosure.link, section_number: i + 1 }));
-              }
-            }
-            setCurrentBookDetails(details);
-          }
-        }
+        const response = await fetch('/api/librivox', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sort_order: 'date_added', limit: PAGE_SIZE, offset, title: searchQuery ? `^${searchQuery}` : undefined })
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const data = await response.json();
+        const initialBooks = data.books || [];
+        const coverPromises = initialBooks.map(book => {
+          if (!book.url_rss) return Promise.resolve(null);
+          return fetch('/api/librivox', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rss_url: book.url_rss })
+          }).then(res => res.json());
+        });
+        const coverResults = await Promise.all(coverPromises);
+        const finalBooks = initialBooks.map((book, index) => ({
+          ...book,
+          authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
+          display_image: coverResults[index]?.imageUrl || book.url_image_archive
+        }));
+        setPaginatedBooks(finalBooks);
       } catch (err) { console.error("Fetch failed:", err); }
       finally { setIsLoading(false); }
     };
-
     fetchData();
-  }, [view, offset, searchQuery, showFavoritesOnly]);
+  }, [view.page, offset, searchQuery, showFavoritesOnly]);
+
+  useEffect(() => {
+    const fetchAllFavorites = async () => {
+      const idsToFetch = Array.from(favoriteIds);
+      if (idsToFetch.length === 0) {
+        setFavoriteBooks([]);
+        return;
+      }
+      try {
+        const bookPromises = idsToFetch.map(id => fetch('/api/librivox', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }).then(res => res.json()));
+        const results = await Promise.all(bookPromises);
+        let booksData = results.map(result => result.books[0]).filter(Boolean);
+        const coverPromises = booksData.map(book => {
+          if (!book.url_rss) return Promise.resolve(null);
+          return fetch('/api/librivox', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rss_url: book.url_rss }) }).then(res => res.json());
+        });
+        const coverResults = await Promise.all(coverPromises);
+        const finalFavoriteBooks = booksData.map((book, index) => ({
+          ...book,
+          authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
+          display_image: coverResults[index]?.imageUrl || book.url_image_archive
+        }));
+        setFavoriteBooks(finalFavoriteBooks);
+      } catch (error) { console.error("Failed to fetch all favorite books:", error); }
+    };
+    fetchAllFavorites();
+  }, [favoriteIds]);
+
+  useEffect(() => {
+    if (view.page !== 'bookDetail' || !view.id) return;
+    const fetchBookDetail = async () => {
+      setIsLoading(true);
+      try {
+        const bookResponse = await fetch('/api/librivox', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: view.id }) });
+        const bookData = await bookResponse.json();
+        if (bookData.books && bookData.books.length > 0) {
+          const details = bookData.books[0];
+          if (details.url_rss) {
+            const rssToJsonApi = `https://api.rss2json.com/v1/api.json?rss_url=`;
+            const rssResponse = await fetch(rssToJsonApi + encodeURIComponent(details.url_rss));
+            const rssData = await rssResponse.json();
+            if (rssData.feed?.image) details.rssImage = rssData.feed.image;
+            if (rssData.items) {
+              details.tracks = rssData.items.map((item, i) => ({ id: i, title: item.title, mp3: item.enclosure.link, section_number: i + 1 }));
+            }
+          }
+          setCurrentBookDetails(details);
+        }
+      } catch (err) { console.error("Fetch book detail failed:", err); }
+      finally { setIsLoading(false); }
+    };
+    fetchBookDetail();
+  }, [view.page, view.id]);
 
   useEffect(() => {
     if (activeSong && audioRef.current) {
@@ -174,58 +137,27 @@ export default function App() {
     }
   }, [activeSong]);
 
-  // --- HANDLER FUNCTIONS ---
-  const jumpToPage = (pageNumber) => {
-    const newOffset = (pageNumber - 1) * PAGE_SIZE;
-    setOffset(Math.max(0, newOffset));
-  };
-
-  const showProfile = () => setView({ page: 'profile', id: null });
-
-  const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
-
   const toggleFavorite = (bookId) => {
     setFavoriteIds(prevIds => {
       const newIds = new Set(prevIds);
-      if (newIds.has(bookId)) {
-        newIds.delete(bookId);
-      } else {
-        newIds.add(bookId);
-      }
+      if (newIds.has(bookId)) { newIds.delete(bookId); }
+      else { newIds.add(bookId); }
       return newIds;
     });
   };
-
-  const toggleShowFavorites = () => {
-    const isNowShowingFavorites = !showFavoritesOnly;
-    setShowFavoritesOnly(isNowShowingFavorites);
-
-    if (isNowShowingFavorites) {
-      fetchAndDisplayFavorites();
-    }
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setOffset(0);
-  };
-
+  const toggleShowFavorites = () => setShowFavoritesOnly(prev => !prev);
+  const handleSearch = (query) => { setSearchQuery(query); setOffset(0); };
   const handleNextPage = () => setOffset(prev => prev + PAGE_SIZE);
-
   const handlePrevPage = () => setOffset(prev => Math.max(0, prev - PAGE_SIZE));
-
+  const jumpToPage = (pageNumber) => setOffset(Math.max(0, (pageNumber - 1) * PAGE_SIZE));
   const showLibrary = () => setView({ page: 'library', id: null });
-
   const showBookDetail = (bookId) => setView({ page: 'bookDetail', id: bookId });
-
   const showVisualizer = () => setView({ page: 'visualizer', id: null });
-
+  const showProfile = () => setView({ page: 'profile', id: null });
+  const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
   const handleSetPlaylist = (tracks, bookDetails, startIndex = 0) => {
-    const proxyUrl = '/api/librivox?url=';
     const formattedPlaylist = tracks.map(track => ({
-      id: bookDetails.id,
-      title: track.title,
-      author: bookDetails.authors[0]?.last_name,
+      id: bookDetails.id, title: track.title, author: bookDetails.authors[0]?.last_name,
       imgUrl: (bookDetails.rssImage || bookDetails.url_image)?.replace(/^http:\/\//i, 'https'),
       audioSrc: `/api/librivox?url=${track.mp3.replace(/^http:\/\//i, 'https')}`,
     }));
@@ -233,103 +165,37 @@ export default function App() {
     setCurrentTrackIndex(startIndex);
     setActiveSong(formattedPlaylist[startIndex]);
   };
-
-  const handleNextSong = () => {
-    if (playlist.length === 0) return;
-    const nextIndex = (currentTrackIndex + 1) % playlist.length;
-    setCurrentTrackIndex(nextIndex);
-    setActiveSong(playlist[nextIndex]);
-  };
-
-  const handlePrevSong = () => {
-    if (playlist.length === 0) return;
-    const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    setCurrentTrackIndex(prevIndex);
-    setActiveSong(playlist[prevIndex]);
-  };
-
-  const handleSeek = (progress) => {
-    const audio = audioRef.current;
-    if (audio && audio.duration && isFinite(audio.duration)) {
-      audio.currentTime = progress * audio.duration;
-    }
-  };
-
-  const handleSkip = (seconds) => {
-    const audio = audioRef.current;
-    if (audio && audio.duration && isFinite(audio.duration)) {
-      audio.currentTime = Math.max(0, audio.currentTime + seconds);
-    }
-  };
-
-  const handleSongClick = () => {
-    if (activeSong) showBookDetail(activeSong.id);
-  };
+  const handleNextSong = () => { if (playlist.length === 0) return; const nextIndex = (currentTrackIndex + 1) % playlist.length; setCurrentTrackIndex(nextIndex); setActiveSong(playlist[nextIndex]); };
+  const handlePrevSong = () => { if (playlist.length === 0) return; const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; setCurrentTrackIndex(prevIndex); setActiveSong(playlist[prevIndex]); };
+  const handleSeek = (progress) => { const audio = audioRef.current; if (audio && audio.duration && isFinite(audio.duration)) { audio.currentTime = progress * audio.duration; } };
+  const handleSkip = (seconds) => { const audio = audioRef.current; if (audio && audio.duration && isFinite(audio.duration)) { audio.currentTime = Math.max(0, audio.currentTime + seconds); } };
+  const handleSongClick = () => { if (activeSong) showBookDetail(activeSong.id); };
 
   const renderCurrentPage = () => {
     switch (view.page) {
       case 'profile':
-        const favoriteBooks = books.filter(book => favoriteIds.has(book.id));
-        return <Profile
-          showLibrary={showLibrary}
-          showBookDetail={showBookDetail}
-          favoriteBooks={favoriteBooks}
-        />;
+        return <Profile showLibrary={showLibrary} showBookDetail={showBookDetail} favoriteBooks={favoriteBooks} />;
       case 'bookDetail':
-        return <BookDetail
-          bookDetails={currentBookDetails}
-          isLoading={isLoading}
-          setPlaylist={handleSetPlaylist}
-          isFavorited={favoriteIds.has(currentBookDetails?.id)}
-          toggleFavorite={() => toggleFavorite(currentBookDetails?.id)}
-        />;
+        return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} isFavorited={favoriteIds.has(currentBookDetails?.id)} toggleFavorite={() => toggleFavorite(currentBookDetails?.id)} />;
       case 'visualizer':
         return <Visualizer audioEl={audioRef.current} />;
       case 'library':
       default:
-        return (
-          <Library
-            books={books}
-            isLoading={isLoading}
-            showBookDetail={showBookDetail}
-            handleNextPage={handleNextPage}
-            handlePrevPage={handlePrevPage}
-            offset={offset}
-            pageSize={PAGE_SIZE}
-            favoriteIds={favoriteIds}
-            showFavoritesOnly={showFavoritesOnly}
-            toggleShowFavorites={toggleShowFavorites}
-            onSearch={handleSearch}
-            searchQuery={searchQuery}
-            jumpToPage={jumpToPage}
-          />
-        );
+        const booksToDisplay = showFavoritesOnly ? favoriteBooks : paginatedBooks;
+        const showLoading = isLoading && !showFavoritesOnly;
+        return <Library books={booksToDisplay} isLoading={showLoading} showBookDetail={showBookDetail} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} offset={offset} pageSize={PAGE_SIZE} showFavoritesOnly={showFavoritesOnly} toggleShowFavorites={toggleShowFavorites} onSearch={handleSearch} searchQuery={searchQuery} jumpToPage={jumpToPage} />;
     }
   };
 
   return (
     <div className="relative flex flex-col h-[85vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
-      <NavBar
-        showProfile={showProfile}
-        showLibrary={showLibrary}
-        showVisualizer={showVisualizer}
-        isLoggedIn={isLoggedIn}
-        toggleLogin={toggleLogin}
-      />
+      <NavBar showProfile={showProfile} showLibrary={showLibrary} showVisualizer={showVisualizer} isLoggedIn={isLoggedIn} toggleLogin={toggleLogin} />
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         {renderCurrentPage()}
       </main>
       {activeSong && (
         <div className="sticky bottom-0 z-10">
-          <AudioPlayerBar
-            audioEl={audioRef.current}
-            activeSong={activeSong}
-            onNext={handleNextSong}
-            onPrev={handlePrevSong}
-            onSeek={handleSeek}
-            onSkip={handleSkip}
-            onSongClick={handleSongClick}
-          />
+          <AudioPlayerBar audioEl={audioRef.current} activeSong={activeSong} onNext={handleNextSong} onPrev={handlePrevSong} onSeek={handleSeek} onSkip={handleSkip} onSongClick={handleSongClick} />
         </div>
       )}
     </div>
