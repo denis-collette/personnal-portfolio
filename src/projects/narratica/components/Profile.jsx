@@ -17,9 +17,7 @@ export default function Profile({ showLibrary, showBookDetail, favoriteBooks }) 
     first_name: mockUser.first_name,
     last_name: mockUser.last_name,
   });
-  const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [favoriteAuthors, setFavoriteAuthors] = useState([]);
-  const [isLoadingBooks, setIsLoadingBooks] = useState(true);
 
   useEffect(() => {
     if (favoriteBooks && favoriteBooks.length > 0) {
