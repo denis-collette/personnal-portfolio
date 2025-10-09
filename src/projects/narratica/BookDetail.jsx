@@ -1,7 +1,9 @@
-import React from 'react';
-import { PlayIcon } from '@heroicons/react/24/solid';
+import React, { useState } from 'react';
+import { PlayIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline';
 
 export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const handlePlay = (track, trackIndex) => {
     const playlistTracks = bookDetails?.tracks || bookDetails?.sections;
@@ -13,6 +15,10 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
   const cleanDescription = (html) => {
     if (!html) return '';
     return html.replace(/<[^>]*>?/gm, '');
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorited(!isFavorited);
   };
 
   if (isLoading) {
@@ -52,10 +58,16 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
           )}
         </section>
         <div>
-          <h2 className="text-3xl font-bold">{bookDetails.title}</h2>
           <p className="text-lg text-gray-300 mt-2">
             by {bookDetails.authors[0]?.first_name} {bookDetails.authors[0]?.last_name}
           </p>
+          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors">
+            {isFavorited ? (
+              <HeartIconSolid className="h-7 w-7" />
+            ) : (
+              <HeartIconOutline className="h-7 w-7" />
+            )}
+          </button>
           <p className="text-gray-400 mt-4 text-sm max-w-prose">
             {cleanDescription(bookDetails.description)}
           </p>
