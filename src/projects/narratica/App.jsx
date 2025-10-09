@@ -232,6 +232,7 @@ export default function App() {
             favoriteIds={favoriteIds}
             showFavoritesOnly={showFavoritesOnly}
             onSearch={handleSearch}
+            searchQuery={searchQuery}
           />
         );
     }

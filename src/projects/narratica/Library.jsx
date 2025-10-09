@@ -3,10 +3,17 @@ import Card from './components/Card.tsx';
 import SkeletonCard from './components/SkeletonCard.tsx';
 import SearchBar from './components/SearchBar.tsx';
 
-export default function Library({ books, isLoading, showBookDetail, handleNextPage, handlePrevPage, offset, pageSize, favoriteIds, showFavoritesOnly, onSearch }) {
-  const filteredBooks = showFavoritesOnly
+export default function Library({ books, isLoading, showBookDetail, handleNextPage, handlePrevPage, offset, pageSize, favoriteIds, showFavoritesOnly, onSearch, searchQuery }) {
+  let booksToDisplay = showFavoritesOnly
     ? books.filter(book => favoriteIds.has(book.id))
     : books;
+
+  if (searchQuery) {
+    booksToDisplay = booksToDisplay.filter(book =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.authorName?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
 
   if (isLoading) {
     return (
@@ -25,25 +32,16 @@ export default function Library({ books, isLoading, showBookDetail, handleNextPa
         <h2 className="text-white font-bold text-3xl">
           {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
         </h2>
-        {!showFavoritesOnly && (
-          <div className="w-full md:w-auto md:max-w-xs">
-            <SearchBar onSearch={onSearch} />
-          </div>
-        )}
+        <div className="w-full md:w-auto md:max-w-xs">
+          <SearchBar onSearch={onSearch} />
+        </div>
       </div>
 
-      {filteredBooks && filteredBooks.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-          {filteredBooks.map((book) => (
+      {booksToDisplay && booksToDisplay.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-8">
+          {booksToDisplay.map((book) => (
             <div key={book.id} onClick={() => showBookDetail(book.id)} className="cursor-pointer">
-              <Card
-                book={{
-                  id: book.id,
-                  url_image: book.url_image,
-                  title: book.title,
-                  authorName: book.authors[0]?.first_name + ' ' + book.authors[0]?.last_name,
-                }}
-              />
+              <Card book={book} />
             </div>
           ))}
         </div>
