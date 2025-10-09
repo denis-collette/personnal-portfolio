@@ -10,7 +10,7 @@ const mockUser = {
   profile_img: "https://github.com/shadcn.png",
 };
 
-export default function Profile({ showLibrary, showBookDetail }) {
+export default function Profile({ showLibrary, showBookDetail, favoriteBooks }) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     username: mockUser.username,
@@ -22,53 +22,12 @@ export default function Profile({ showLibrary, showBookDetail }) {
   const [isLoadingBooks, setIsLoadingBooks] = useState(true);
 
   useEffect(() => {
-    const fetchFavoriteBooks = async () => {
-      const bookIds = ['1948', '244', '1260', '158'];
-
-      const bookPromises = bookIds.map(id =>
-        fetch('/api/librivox', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id })
-        }).then(res => res.json())
-      );
-
-      try {
-        const results = await Promise.all(bookPromises);
-        let booksData = results.map(result => result.books[0]);
-
-        const coverPromises = booksData.map(book => {
-          if (!book.url_rss) return Promise.resolve(null);
-          return fetch('/api/librivox', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ rss_url: book.url_rss })
-          }).then(res => res.json());
-        });
-
-        const coverResults = await Promise.all(coverPromises);
-
-        const finalBooks = booksData.map((book, index) => ({
-          ...book,
-          authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
-          display_image: coverResults[index]?.imageUrl || book.url_image_archive
-        }));
-
-        setFavoriteBooks(finalBooks);
-
-        const authors = finalBooks.flatMap(book => book.authors.map(a => `${a.first_name} ${a.last_name}`));
-        const uniqueAuthors = [...new Set(authors)];
-        setFavoriteAuthors(uniqueAuthors);
-
-      } catch (error) {
-        console.error("Failed to fetch favorite books for profile:", error);
-      } finally {
-        setIsLoadingBooks(false);
-      }
-    };
-
-    fetchFavoriteBooks();
-  }, []);
+    if (favoriteBooks && favoriteBooks.length > 0) {
+      const authors = favoriteBooks.flatMap(book => book.authors.map(a => `${a.first_name} ${a.last_name}`));
+      const uniqueAuthors = [...new Set(authors)];
+      setFavoriteAuthors(uniqueAuthors);
+    }
+  }, [favoriteBooks]);
 
   const handleInputChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -125,13 +84,11 @@ export default function Profile({ showLibrary, showBookDetail }) {
       {/* Favorites Section */}
       <section className="mt-10">
         <h2 className="text-3xl font-semibold mb-4">Your Favorites</h2>
-        <h3 className="text-xl font-bold text-indigo-400 mb-3">Favorite Books</h3>
+        <h3 className="text-xl font-bold text-indigo-400 mb-3">Favorite Books (Top 5)</h3>
 
-        {isLoadingBooks ? (
-          <p>Loading favorite books...</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            {favoriteBooks.map(book => (
+        {favoriteBooks && favoriteBooks.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
+            {favoriteBooks.slice(0, 5).map(book => (
               <button key={book.id} onClick={() => showBookDetail(book.id)} className="text-center group">
                 <div className="aspect-square overflow-hidden rounded-md shadow-lg">
                   <img
@@ -145,6 +102,8 @@ export default function Profile({ showLibrary, showBookDetail }) {
               </button>
             ))}
           </div>
+        ) : (
+          <p className="text-gray-400 italic mb-8">No books have been added to favorites yet.</p>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -156,7 +115,7 @@ export default function Profile({ showLibrary, showBookDetail }) {
           </div>
           <div className="bg-white/5 p-4 rounded-lg">
             <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Narrators</h3>
-            <p className="text-sm text-gray-400 italic">(Narrator data is not available in this view)</p>
+            <p className="text-sm text-gray-400 italic">The Narrator feature is not available in this LibriVox-based version of Narratica.</p>
           </div>
         </div>
       </section>

@@ -202,7 +202,12 @@ export default function App() {
   const renderCurrentPage = () => {
     switch (view.page) {
       case 'profile':
-        return <Profile showLibrary={showLibrary} showBookDetail={showBookDetail} />;
+        const favoriteBooks = books.filter(book => favoriteIds.has(book.id));
+        return <Profile
+          showLibrary={showLibrary}
+          showBookDetail={showBookDetail}
+          favoriteBooks={favoriteBooks}
+        />;
       case 'bookDetail':
         return <BookDetail
           bookDetails={currentBookDetails}
