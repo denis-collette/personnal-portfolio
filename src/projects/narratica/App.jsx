@@ -22,10 +22,20 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const [favoriteIds, setFavoriteIds] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedFavorites = localStorage.getItem('narratica_favorites');
+      return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
+    }
+    return new Set();
+  });
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   // --- HOOKS for INITIALIZATION and DATA FETCHING ---
+  useEffect(() => {
+    localStorage.setItem('narratica_favorites', JSON.stringify(Array.from(favoriteIds)));
+  }, [favoriteIds]);
+
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
