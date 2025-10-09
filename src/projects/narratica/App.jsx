@@ -22,6 +22,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   // --- HOOKS for INITIALIZATION and DATA FETCHING ---
   useEffect(() => {
@@ -120,6 +122,22 @@ export default function App() {
 
   const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
 
+  const toggleFavorite = (bookId) => {
+    setFavoriteIds(prevIds => {
+      const newIds = new Set(prevIds);
+      if (newIds.has(bookId)) {
+        newIds.delete(bookId);
+      } else {
+        newIds.add(bookId);
+      }
+      return newIds;
+    });
+  };
+
+  const toggleShowFavorites = () => {
+    setShowFavoritesOnly(prev => !prev);
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     setOffset(0);
@@ -186,7 +204,13 @@ export default function App() {
       case 'profile':
         return <Profile showLibrary={showLibrary} showBookDetail={showBookDetail} />;
       case 'bookDetail':
-        return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} />;
+        return <BookDetail
+          bookDetails={currentBookDetails}
+          isLoading={isLoading}
+          setPlaylist={handleSetPlaylist}
+          isFavorited={favoriteIds.has(currentBookDetails?.id)}
+          toggleFavorite={() => toggleFavorite(currentBookDetails?.id)}
+        />;
       case 'visualizer':
         return <Visualizer audioEl={audioRef.current} />;
       case 'library':
@@ -200,6 +224,8 @@ export default function App() {
             handlePrevPage={handlePrevPage}
             offset={offset}
             pageSize={PAGE_SIZE}
+            favoriteIds={favoriteIds}
+            showFavoritesOnly={showFavoritesOnly}
           />
         );
     }
@@ -214,6 +240,8 @@ export default function App() {
         showVisualizer={showVisualizer}
         isLoggedIn={isLoggedIn}
         toggleLogin={toggleLogin}
+        showFavoritesOnly={showFavoritesOnly}
+        toggleShowFavorites={toggleShowFavorites}
       />
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         {renderCurrentPage()}
