@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 import Card from './components/Card.tsx';
 import SkeletonCard from './components/SkeletonCard.tsx';
 import SearchBar from './components/SearchBar.tsx';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 
-export default function Library({ 
-  books, 
-  isLoading, 
-  showBookDetail, 
-  handleNextPage, 
-  handlePrevPage, 
-  offset, 
-  pageSize, 
-  favoriteIds, 
-  showFavoritesOnly, 
-  onSearch, 
-  searchQuery, 
-  jumpToPage 
+export default function Library({
+  books,
+  isLoading,
+  showBookDetail,
+  handleNextPage,
+  handlePrevPage,
+  offset,
+  pageSize,
+  favoriteIds,
+  showFavoritesOnly,
+  toggleShowFavorites,
+  onSearch,
+  searchQuery,
+  jumpToPage
 }) {
   const [pageInput, setPageInput] = useState('');
 
@@ -56,6 +58,13 @@ export default function Library({
         <h2 className="text-white font-bold text-3xl">
           {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
         </h2>
+        <button
+          onClick={toggleShowFavorites}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600'}`}
+        >
+          {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
+          <span>{showFavoritesOnly ? 'Showing Favorites' : 'Show Favorites'}</span>
+        </button>
         <div className="w-full md:w-auto md:max-w-xs">
           <SearchBar onSearch={onSearch} />
         </div>
@@ -86,11 +95,11 @@ export default function Library({
           <button onClick={handlePrevPage} disabled={offset === 0} className="...">
             &larr; Previous
           </button>
-          
+
           {/* Page Jump Form */}
           <form onSubmit={handlePageJump} className="flex items-center gap-2">
             <span className="text-gray-400 hidden sm:inline">Page {Math.floor(offset / pageSize) + 1}</span>
-            <input 
+            <input
               type="number"
               min="1"
               value={pageInput}

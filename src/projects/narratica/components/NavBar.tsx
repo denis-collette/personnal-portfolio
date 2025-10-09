@@ -9,13 +9,14 @@ interface NavBarProps {
   showProfile: () => void;
   isLoggedIn: boolean;
   toggleLogin: () => void;
-  showFavoritesOnly: boolean;
-  toggleShowFavorites: () => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({
-  showLibrary, showVisualizer, showProfile,
-  isLoggedIn, toggleLogin, showFavoritesOnly, toggleShowFavorites
+  showLibrary,
+  showVisualizer,
+  showProfile,
+  isLoggedIn,
+  toggleLogin
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,11 +31,6 @@ const NavBar: React.FC<NavBarProps> = ({
     setIsMenuOpen(false); // Close menu after a navigation action
   };
 
-  const handleFavoritesClick = () => {
-    toggleShowFavorites();
-    setIsMenuOpen(false); // Close menu after action
-  };
-
   return (
     <header className="sticky top-0 z-20 p-2 px-3.5 bg-narratica-dark text-white ...">
       <div className="flex justify-between items-center">
@@ -45,12 +41,6 @@ const NavBar: React.FC<NavBarProps> = ({
             <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home" className="flex-shrink-0">
               <img src={homeIcon} alt="Home" style={{ width: 35, height: 35 }} />
             </a>
-            {isLoggedIn && (
-              <button onClick={toggleShowFavorites} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-800 text-white hover:bg-neutral-700'}`}>
-                {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
-                <span>{showFavoritesOnly ? 'Show all books' : 'Show favorites'}</span>
-              </button>
-            )}
           </div>
 
           {/* Right Section */}
@@ -101,10 +91,6 @@ const NavBar: React.FC<NavBarProps> = ({
           <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-narratica-dark flex flex-col items-center justify-center gap-8 text-xl z-20 animate-slideup">
             {isLoggedIn ? (
               <>
-                <button onClick={handleFavoritesClick} className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500' : 'bg-neutral-800'}`}>
-                  {showFavoritesOnly && <HeartIconSolid className="h-5 w-5" />}
-                  <span>{showFavoritesOnly ? 'Show all books' : 'Show favorites'}</span>
-                </button>
                 <a href="#" onClick={(e) => handleNavClick(e, showProfile)} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Profile</a>
                 <button onClick={toggleLogin} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Logout</button>
               </>
