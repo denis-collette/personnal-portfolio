@@ -21,3 +21,5 @@ pnpm-debug.log*
 # Editor directories and files
 .vscode
 .DS_Store
+# Local Netlify folder
+.netlify

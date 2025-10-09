@@ -5,6 +5,7 @@ import AudioPlayerBar from './components/AudioPlayerBar.tsx';
 import Library from './Library.jsx';
 import BookDetail from './BookDetail.jsx';
 import Visualizer from './safeZone/Visualizer.tsx';
+import Profile from './components/Profile.jsx';
 
 const PAGE_SIZE = 20;
 
@@ -20,6 +21,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [offset, setOffset] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // --- HOOKS for INITIALIZATION and DATA FETCHING ---
   useEffect(() => {
@@ -61,7 +63,6 @@ export default function App() {
 
       try {
         if (view.page === 'library') {
-          // UPDATED to POST
           const response = await fetch('/api/librivox', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -115,6 +116,10 @@ export default function App() {
   }, [activeSong]);
 
   // --- HANDLER FUNCTIONS ---
+  const showProfile = () => setView({ page: 'profile', id: null });
+
+  const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     setOffset(0);
@@ -160,14 +165,16 @@ export default function App() {
 
   const handleSeek = (progress) => {
     const audio = audioRef.current;
-    if (audio && audio.duration) {
+    if (audio && audio.duration && isFinite(audio.duration)) {
       audio.currentTime = progress * audio.duration;
     }
   };
 
   const handleSkip = (seconds) => {
     const audio = audioRef.current;
-    if (audio) audio.currentTime = Math.max(0, audio.currentTime + seconds);
+    if (audio && audio.duration && isFinite(audio.duration)) {
+      audio.currentTime = Math.max(0, audio.currentTime + seconds);
+    }
   };
 
   const handleSongClick = () => {
@@ -176,6 +183,8 @@ export default function App() {
 
   const renderCurrentPage = () => {
     switch (view.page) {
+      case 'profile':
+        return <Profile showLibrary={showLibrary} />;
       case 'bookDetail':
         return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} />;
       case 'visualizer':
@@ -197,8 +206,15 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex flex-col h-[80vh] bg-neutral-900 text-white rounded-lg overflow-hidden">
-      <NavBar onSearch={handleSearch} showLibrary={showLibrary} showVisualizer={showVisualizer} />
+    <div className="relative flex flex-col h-[85vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
+      <NavBar
+        showProfile={showProfile}
+        onSearch={handleSearch}
+        showLibrary={showLibrary}
+        showVisualizer={showVisualizer}
+        isLoggedIn={isLoggedIn}
+        toggleLogin={toggleLogin}
+      />
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         {renderCurrentPage()}
       </main>

@@ -5,7 +5,7 @@ export default function SearchBar({ onSearch }) {
   return (
     <div className="relative flex items-center">
       <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-      <input 
+      <input
         type="search"
         placeholder="Search title or author..."
         onChange={(e) => onSearch(e.target.value)}
