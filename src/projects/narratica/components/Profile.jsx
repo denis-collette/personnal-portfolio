@@ -115,7 +115,6 @@ export default function Profile({ showLibrary }) {
       </div>
 
       {/* Favorites Section */}
-      {/* Favorites Section */}
       <section className="mt-10">
         <h2 className="text-3xl font-semibold mb-4">Your Favorites</h2>
         <h3 className="text-xl font-bold text-indigo-400 mb-3">Favorite Books</h3>
