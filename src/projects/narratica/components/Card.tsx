@@ -3,6 +3,7 @@ import React from 'react';
 interface Book {
   id: string | number;
   cover_art_jpg?: string;
+  display_image?: string;
   url_image?: string;
   title: string;
   authorName?: string;
