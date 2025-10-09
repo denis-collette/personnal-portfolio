@@ -226,6 +226,7 @@ export default function App() {
             pageSize={PAGE_SIZE}
             favoriteIds={favoriteIds}
             showFavoritesOnly={showFavoritesOnly}
+            onSearch={handleSearch}
           />
         );
     }
@@ -235,7 +236,6 @@ export default function App() {
     <div className="relative flex flex-col h-[85vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
       <NavBar
         showProfile={showProfile}
-        onSearch={handleSearch}
         showLibrary={showLibrary}
         showVisualizer={showVisualizer}
         isLoggedIn={isLoggedIn}

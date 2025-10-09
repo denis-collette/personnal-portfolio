@@ -1,8 +1,9 @@
 import React from 'react';
 import Card from './components/Card.tsx';
 import SkeletonCard from './components/SkeletonCard.tsx';
+import SearchBar from './components/SearchBar.tsx';
 
-export default function Library({ books, isLoading, showBookDetail, handleNextPage, handlePrevPage, offset, pageSize, favoriteIds, showFavoritesOnly }) {
+export default function Library({ books, isLoading, showBookDetail, handleNextPage, handlePrevPage, offset, pageSize, favoriteIds, showFavoritesOnly, onSearch }) {
   const filteredBooks = showFavoritesOnly
     ? books.filter(book => favoriteIds.has(book.id))
     : books;
@@ -20,9 +21,16 @@ export default function Library({ books, isLoading, showBookDetail, handleNextPa
 
   return (
     <div>
-      <h2 className="text-white font-bold text-3xl mb-10">
-        {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
-      </h2>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+        <h2 className="text-white font-bold text-3xl">
+          {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
+        </h2>
+        {!showFavoritesOnly && (
+          <div className="w-full md:w-auto md:max-w-xs">
+            <SearchBar onSearch={onSearch} />
+          </div>
+        )}
+      </div>
 
       {filteredBooks && filteredBooks.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import homeIcon from '../assets/favicon.ico';
-import SearchBar from './SearchBar.tsx';
-import { ArrowLeftOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftOnRectangleIcon, Bars3Icon, XMarkIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 
+// The onSearch prop is no longer needed
 interface NavBarProps {
-  onSearch: (query: string) => void;
   showLibrary: () => void;
   showVisualizer: () => void;
   showProfile: () => void;
@@ -14,9 +13,9 @@ interface NavBarProps {
   toggleShowFavorites: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ 
-  onSearch, showLibrary, showVisualizer, showProfile, 
-  isLoggedIn, toggleLogin, showFavoritesOnly, toggleShowFavorites 
+const NavBar: React.FC<NavBarProps> = ({
+  showLibrary, showVisualizer, showProfile,
+  isLoggedIn, toggleLogin, showFavoritesOnly, toggleShowFavorites
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,32 +29,28 @@ const NavBar: React.FC<NavBarProps> = ({
     callback();
     setIsMenuOpen(false); // Close menu after a navigation action
   };
-  
+
   const handleFavoritesClick = () => {
     toggleShowFavorites();
     setIsMenuOpen(false); // Close menu after action
   };
 
   return (
-    <header className="sticky top-0 z-20 p-2 px-3.5 bg-narratica-dark text-white bg-opacity-95 backdrop-blur-sm">
+    <header className="sticky top-0 z-20 p-2 px-3.5 bg-narratica-dark text-white ...">
       <div className="flex justify-between items-center">
         {/* --- DESKTOP NAVBAR --- */}
         <div className="hidden md:flex flex-grow justify-between items-center gap-4">
           {/* Left Section */}
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-4 items-center">
             <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home" className="flex-shrink-0">
               <img src={homeIcon} alt="Home" style={{ width: 35, height: 35 }} />
             </a>
             {isLoggedIn && (
-              <button onClick={toggleShowFavorites} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-800 text-white hover:bg-neutral-700'}`}>
-                Favorites
+              <button onClick={toggleShowFavorites} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-800 text-white hover:bg-neutral-700'}`}>
+                {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
+                <span>{showFavoritesOnly ? 'Show all books' : 'Show favorites'}</span>
               </button>
             )}
-          </div>
-
-          {/* Center Section */}
-          <div className="flex-grow max-w-sm">
-            <SearchBar onSearch={onSearch} />
           </div>
 
           {/* Right Section */}
@@ -74,6 +69,9 @@ const NavBar: React.FC<NavBarProps> = ({
                 <button onClick={toggleLogin} className="px-4 py-2 rounded-full text-sm font-medium bg-neutral-800 text-white hover:bg-neutral-700">
                   Login
                 </button>
+                <button onClick={toggleLogin} className="px-4 py-2 rounded-full text-sm font-medium bg-green-700 text-white hover:bg-green-600">
+                  Sign Up
+                </button>
               </>
             )}
             <a href="#" onClick={(e) => handleNavClick(e, showVisualizer)} title="Visualizer Easter Egg">
@@ -84,40 +82,41 @@ const NavBar: React.FC<NavBarProps> = ({
 
         {/* --- MOBILE NAVBAR --- */}
         <div className="md:hidden flex justify-between items-center w-full">
-           <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home" className="flex-shrink-0">
-              <img src={homeIcon} alt="Home" style={{ width: 35, height: 35 }} />
+          <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home" className="flex-shrink-0">
+            <img src={homeIcon} alt="Home" style={{ width: 35, height: 35 }} />
+          </a>
+          <span className="text-lg font-bold">Narratica</span>
+          <div className="flex items-center gap-4">
+            <a href="#" onClick={(e) => handleNavClick(e, showVisualizer)} title="Visualizer Easter Egg">
+              <div className="w-3 h-3 bg-green-500 rounded-full" />
             </a>
-            <span className="text-lg font-bold">Narratica</span>
-           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="z-30">
-             {isMenuOpen ? <XMarkIcon className="h-7 w-7"/> : <Bars3Icon className="h-7 w-7"/>}
-           </button>
-        </div>
-      </div>
-
-      {/* --- MOBILE DROPDOWN MENU --- */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-narratica-dark flex flex-col items-center justify-center gap-8 text-xl z-20 animate-slideup">
-          <div className="w-full max-w-xs mb-8">
-            <SearchBar onSearch={onSearch} />
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="z-30">
+              {isMenuOpen ? <XMarkIcon className="h-7 w-7" /> : <Bars3Icon className="h-7 w-7" />}
+            </button>
           </div>
-          
-          {isLoggedIn ? (
-            <>
-              <button onClick={handleFavoritesClick} className={`px-6 py-3 rounded-full font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500' : 'bg-neutral-800'}`}>
-                {showFavoritesOnly ? 'Show All' : 'My Favorites'}
-              </button>
-              <a href="#" onClick={(e) => handleNavClick(e, showProfile)} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Profile</a>
-              <button onClick={toggleLogin} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Logout</button>
-            </>
-          ) : (
-            <>
-              <button onClick={toggleLogin} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Login</button>
-              <button onClick={toggleLogin} className="bg-green-700 px-6 py-3 rounded-full font-medium">Sign Up</button>
-            </>
-          )}
-          <a href="#" onClick={(e) => handleNavClick(e, showVisualizer)} className="text-green-500 mt-4">Visualizer</a>
         </div>
-      )}
+
+        {/* --- MOBILE DROPDOWN MENU --- */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-narratica-dark flex flex-col items-center justify-center gap-8 text-xl z-20 animate-slideup">
+            {isLoggedIn ? (
+              <>
+                <button onClick={handleFavoritesClick} className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${showFavoritesOnly ? 'bg-indigo-500' : 'bg-neutral-800'}`}>
+                  {showFavoritesOnly && <HeartIconSolid className="h-5 w-5" />}
+                  <span>{showFavoritesOnly ? 'Show all books' : 'Show favorites'}</span>
+                </button>
+                <a href="#" onClick={(e) => handleNavClick(e, showProfile)} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Profile</a>
+                <button onClick={toggleLogin} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Logout</button>
+              </>
+            ) : (
+              <>
+                <button onClick={toggleLogin} className="bg-neutral-800 px-6 py-3 rounded-full font-medium">Login</button>
+                <button onClick={toggleLogin} className="bg-green-700 px-6 py-3 rounded-full font-medium">Sign Up</button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </header>
   );
 };

@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react'; // Remove useState
 import { PlayIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline';
 
-export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
-  const [isFavorited, setIsFavorited] = useState(false);
-
+export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavorited, toggleFavorite }) {
   const handlePlay = (track, trackIndex) => {
     const playlistTracks = bookDetails?.tracks || bookDetails?.sections;
     if (playlistTracks) {
@@ -15,10 +13,6 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
   const cleanDescription = (html) => {
     if (!html) return '';
     return html.replace(/<[^>]*>?/gm, '');
-  };
-
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
   };
 
   if (isLoading) {
@@ -62,13 +56,13 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
           <p className="text-lg text-gray-300 mt-2">
             by {bookDetails.authors[0]?.first_name} {bookDetails.authors[0]?.last_name}
           </p>
-          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors mt-4">
-            {isFavorited ? (
-              <HeartIconSolid className="h-7 w-7" />
-            ) : (
-              <HeartIconOutline className="h-7 w-7" />
-            )}
-          </button>
+          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors">
+              {isFavorited ? (
+                <HeartIconSolid className="h-7 w-7" />
+              ) : (
+                <HeartIconOutline className="h-7 w-7" />
+              )}
+            </button>
           <p className="text-gray-400 mt-4 text-sm max-w-prose">
             {cleanDescription(bookDetails.description)}
           </p>
