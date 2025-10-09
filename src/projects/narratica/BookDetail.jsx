@@ -45,8 +45,10 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavo
             <img className='object-cover rounded-lg w-full h-full' src={secureImageUrl} alt={`Cover for ${bookDetails.title}`} />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-neutral-800 rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v1.5M12 12.253v6.5M18.364 5.636l-1.06 1.06M6.736 17.264l-1.06 1.06M21.75 12.253h-1.5M3.75 12.253h-1.5M17.304 17.264l-1.06-1.06M7.794 6.696l-1.06-1.06" />
+              <svg className="w-12 h-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 8c2.21 0 4 1.79 4 4s-1.79 4-4 4" opacity="0.5" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 10c1.105 0 2 .895 2 2s-.895 2-2 2" opacity="0.8" />
               </svg>
             </div>
           )}
@@ -57,12 +59,12 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavo
             by {bookDetails.authors[0]?.first_name} {bookDetails.authors[0]?.last_name}
           </p>
           <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors">
-              {isFavorited ? (
-                <HeartIconSolid className="h-7 w-7" />
-              ) : (
-                <HeartIconOutline className="h-7 w-7" />
-              )}
-            </button>
+            {isFavorited ? (
+              <HeartIconSolid className="h-7 w-7" />
+            ) : (
+              <HeartIconOutline className="h-7 w-7" />
+            )}
+          </button>
           <p className="text-gray-400 mt-4 text-sm max-w-prose">
             {cleanDescription(bookDetails.description)}
           </p>
