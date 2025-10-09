@@ -9,6 +9,13 @@ export default function AudioPlayerBar({ audioEl, activeSong, onNext, onPrev, on
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const progressBarRef = useRef(null);
+  const onSeekRef = useRef(onSeek);
+  const onSkipRef = useRef(onSkip);
+
+  useEffect(() => {
+    onSeekRef.current = onSeek;
+    onSkipRef.current = onSkip;
+  }, [onSeek, onSkip]);
 
   useEffect(() => {
     const audio = audioEl;
@@ -60,7 +67,7 @@ export default function AudioPlayerBar({ audioEl, activeSong, onNext, onPrev, on
       const rect = progressBarRef.current.getBoundingClientRect();
       const clickPosition = e.clientX - rect.left;
       const newProgress = clickPosition / rect.width;
-      if (onSeek) onSeek(newProgress);
+      if (onSeekRef.current) onSeekRef.current(newProgress);
     }
   };
 

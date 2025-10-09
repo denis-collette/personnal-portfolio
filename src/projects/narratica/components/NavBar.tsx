@@ -27,7 +27,7 @@ const NavBar: React.FC<NavBarProps> = ({ onSearch, showLibrary, showVisualizer, 
     <header className="sticky top-0 z-10 p-2 px-3.5 bg-narratica-dark text-white ...">
       <div className="flex gap-4 justify-between items-center">
         <div className="flex gap-2 items-center">
-          <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home">
+          <a href="#" onClick={(e) => handleNavClick(e, showLibrary)} title="Home" className="flex-shrink-0">
             <img src={homeIcon} alt="Home" style={{ width: 35, height: 35 }} />
           </a>
           {isLoggedIn && (
@@ -47,7 +47,7 @@ const NavBar: React.FC<NavBarProps> = ({ onSearch, showLibrary, showVisualizer, 
               <button onClick={toggleLogin} title="Click to Logout" className="px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-in-out bg-neutral-800 text-white hover:bg-neutral-700">
                 <ArrowLeftOnRectangleIcon className="h-5 w-5" />
               </button>
-              <a href="#" onClick={(e) => { e.preventDefault(); showProfile(); }} title={`Profile: ${mockUser.username}`}>
+              <a href="#" onClick={(e) => { e.preventDefault(); showProfile(); }} title={`Profile: ${mockUser.username}`} className="flex-shrink-0"> {/* Add flex-shrink-0 */}
                 <img src={mockUser.avatar} alt="User Avatar" className="w-9 h-9 rounded-full" />
               </a>
             </>
