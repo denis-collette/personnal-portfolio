@@ -58,10 +58,11 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist }) {
           )}
         </section>
         <div>
+          <h2 className="text-3xl font-bold">{bookDetails.title}</h2>
           <p className="text-lg text-gray-300 mt-2">
             by {bookDetails.authors[0]?.first_name} {bookDetails.authors[0]?.last_name}
           </p>
-          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors">
+          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors mt-4">
             {isFavorited ? (
               <HeartIconSolid className="h-7 w-7" />
             ) : (
