@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
 const mockUser = {
@@ -20,7 +20,6 @@ const mockFavoriteBooks = [
 const mockFavoriteAuthors = [{ id: 1, name: "Arthur Conan Doyle" }, { id: 2, name: "Jack London" }];
 const mockFavoriteNarrators = [{ id: 1, name: "David Clarke" }, { id: 2, name: "John Greenman" }];
 
-
 export default function Profile({ showLibrary }) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,6 +27,40 @@ export default function Profile({ showLibrary }) {
     first_name: mockUser.first_name,
     last_name: mockUser.last_name,
   });
+  const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const [isLoadingBooks, setIsLoadingBooks] = useState(true);
+
+  useEffect(() => {
+    const fetchFavoriteBooks = async () => {
+      const bookIds = ['1948', '244', '1260', '158'];
+
+      const bookPromises = bookIds.map(id =>
+        fetch('/api/librivox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        }).then(res => res.json())
+      );
+
+      try {
+        const results = await Promise.all(bookPromises);
+        const booksWithAuthors = results.map(result => {
+          const book = result.books[0];
+          return {
+            ...book,
+            authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', ')
+          };
+        });
+        setFavoriteBooks(booksWithAuthors);
+      } catch (error) {
+        console.error("Failed to fetch favorite books for profile:", error);
+      } finally {
+        setIsLoadingBooks(false);
+      }
+    };
+
+    fetchFavoriteBooks();
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -82,28 +115,34 @@ export default function Profile({ showLibrary }) {
       </div>
 
       {/* Favorites Section */}
+      {/* Favorites Section */}
       <section className="mt-10">
         <h2 className="text-3xl font-semibold mb-4">Your Favorites</h2>
         <h3 className="text-xl font-bold text-indigo-400 mb-3">Favorite Books</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {mockFavoriteBooks.map(book => (
-                <div key={book.id} className="text-center">
-                    <img src={book.url_image} alt={book.title} className="aspect-square object-cover rounded-md shadow-lg" />
-                    <p className="font-bold mt-2 text-sm truncate">{book.title}</p>
-                    <p className="text-xs text-gray-400 truncate">{book.authorName}</p>
-                </div>
-            ))}
-        </div>
         
+        {isLoadingBooks ? (
+          <p>Loading favorite books...</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {favoriteBooks.map(book => (
+              <div key={book.id} className="text-center">
+                <img src={book.url_image_archive?.replace(/^http:/, 'https')} alt={book.title} className="aspect-square object-cover rounded-md shadow-lg" />
+                <p className="font-bold mt-2 text-sm truncate">{book.title}</p>
+                <p className="text-xs text-gray-400 truncate">{book.authorName}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white/5 p-4 rounded-lg">
-                <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Authors</h3>
-                <ul className="list-disc list-inside space-y-1">{mockFavoriteAuthors.map(a => <li key={a.id}>{a.name}</li>)}</ul>
-            </div>
-            <div className="bg-white/5 p-4 rounded-lg">
-                <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Narrators</h3>
-                <ul className="list-disc list-inside space-y-1">{mockFavoriteNarrators.map(n => <li key={n.id}>{n.name}</li>)}</ul>
-            </div>
+          <div className="bg-white/5 p-4 rounded-lg">
+            <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Authors</h3>
+            <ul className="list-disc list-inside space-y-1">{mockFavoriteAuthors.map(a => <li key={a.id}>{a.name}</li>)}</ul>
+          </div>
+          <div className="bg-white/5 p-4 rounded-lg">
+            <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Narrators</h3>
+            <ul className="list-disc list-inside space-y-1">{mockFavoriteNarrators.map(n => <li key={n.id}>{n.name}</li>)}</ul>
+          </div>
         </div>
       </section>
     </div>
