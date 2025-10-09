@@ -32,6 +32,52 @@ export default function App() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   // --- HOOKS for INITIALIZATION and DATA FETCHING ---
+  const fetchAndDisplayFavorites = async () => {
+    setIsLoading(true);
+    const idsToFetch = Array.from(favoriteIds);
+
+    if (idsToFetch.length === 0) {
+      setBooks([]);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const bookPromises = idsToFetch.map(id =>
+        fetch('/api/librivox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        }).then(res => res.json())
+      );
+      const results = await Promise.all(bookPromises);
+      let favoriteBooksData = results.map(result => result.books[0]);
+
+      const coverPromises = favoriteBooksData.map(book => {
+        if (!book.url_rss) return Promise.resolve(null);
+        return fetch('/api/librivox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rss_url: book.url_rss })
+        }).then(res => res.json());
+      });
+      const coverResults = await Promise.all(coverPromises);
+
+      const finalFavoriteBooks = favoriteBooksData.map((book, index) => ({
+        ...book,
+        authorName: book.authors.map(a => `${a.first_name} ${a.last_name}`).join(', '),
+        display_image: coverResults[index]?.imageUrl || book.url_image_archive
+      }));
+
+      setBooks(finalFavoriteBooks);
+    } catch (error) {
+      console.error("Failed to fetch all favorite books:", error);
+      setBooks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem('narratica_favorites', JSON.stringify(Array.from(favoriteIds)));
   }, [favoriteIds]);
@@ -44,11 +90,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (showFavoritesOnly) return;
+
     const fetchCoverImages = async (bookList) => {
       for (const book of bookList) {
         if (book.url_rss) {
           try {
-            // UPDATED to POST
             const response = await fetch('/api/librivox', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -117,7 +164,7 @@ export default function App() {
     };
 
     fetchData();
-  }, [view, offset, searchQuery]);
+  }, [view, offset, searchQuery, showFavoritesOnly]);
 
   useEffect(() => {
     if (activeSong && audioRef.current) {
@@ -128,6 +175,11 @@ export default function App() {
   }, [activeSong]);
 
   // --- HANDLER FUNCTIONS ---
+  const jumpToPage = (pageNumber) => {
+    const newOffset = (pageNumber - 1) * PAGE_SIZE;
+    setOffset(Math.max(0, newOffset));
+  };
+
   const showProfile = () => setView({ page: 'profile', id: null });
 
   const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
@@ -145,7 +197,12 @@ export default function App() {
   };
 
   const toggleShowFavorites = () => {
-    setShowFavoritesOnly(prev => !prev);
+    const isNowShowingFavorites = !showFavoritesOnly;
+    setShowFavoritesOnly(isNowShowingFavorites);
+
+    if (isNowShowingFavorites) {
+      fetchAndDisplayFavorites();
+    }
   };
 
   const handleSearch = (query) => {
@@ -243,6 +300,7 @@ export default function App() {
             showFavoritesOnly={showFavoritesOnly}
             onSearch={handleSearch}
             searchQuery={searchQuery}
+            jumpToPage={jumpToPage}
           />
         );
     }

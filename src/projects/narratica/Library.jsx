@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from './components/Card.tsx';
 import SkeletonCard from './components/SkeletonCard.tsx';
 import SearchBar from './components/SearchBar.tsx';
 
-export default function Library({ books, isLoading, showBookDetail, handleNextPage, handlePrevPage, offset, pageSize, favoriteIds, showFavoritesOnly, onSearch, searchQuery }) {
+export default function Library({ 
+  books, 
+  isLoading, 
+  showBookDetail, 
+  handleNextPage, 
+  handlePrevPage, 
+  offset, 
+  pageSize, 
+  favoriteIds, 
+  showFavoritesOnly, 
+  onSearch, 
+  searchQuery, 
+  jumpToPage 
+}) {
+  const [pageInput, setPageInput] = useState('');
+
+  const handlePageJump = (e) => {
+    e.preventDefault();
+    const pageNum = parseInt(pageInput, 10);
+    if (pageNum > 0) {
+      jumpToPage(pageNum);
+      setPageInput('');
+    }
+  };
+
   let booksToDisplay = showFavoritesOnly
     ? books.filter(book => favoriteIds.has(book.id))
     : books;
@@ -59,11 +83,27 @@ export default function Library({ books, isLoading, showBookDetail, handleNextPa
       {/* Pagination Controls */}
       {!showFavoritesOnly && (
         <div className="flex justify-center items-center gap-4 mt-12">
-          <button onClick={handlePrevPage} disabled={offset === 0} className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700">
+          <button onClick={handlePrevPage} disabled={offset === 0} className="...">
             &larr; Previous
           </button>
-          <span className="text-gray-400">Page {Math.floor(offset / pageSize) + 1}</span>
-          <button onClick={handleNextPage} disabled={!books || books.length < pageSize} className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700">
+          
+          {/* Page Jump Form */}
+          <form onSubmit={handlePageJump} className="flex items-center gap-2">
+            <span className="text-gray-400 hidden sm:inline">Page {Math.floor(offset / pageSize) + 1}</span>
+            <input 
+              type="number"
+              min="1"
+              value={pageInput}
+              onChange={(e) => setPageInput(e.target.value)}
+              placeholder="Go to..."
+              className="w-24 p-2 rounded-full bg-neutral-800 text-white text-center text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button type="submit" className="px-4 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 text-sm">
+              Go
+            </button>
+          </form>
+
+          <button onClick={handleNextPage} disabled={!books || books.length < pageSize} className="...">
             Next &rarr;
           </button>
         </div>
