@@ -58,11 +58,15 @@ export default function Profile({ userData, onProfileUpdate, showLibrary, showBo
   }
 
   const deleteAccount = () => {
-    if (confirm("Are you sure you want to delete your account? (This is a mock interaction)")) {
-      alert("Account 'deleted'. Returning to the library.");
-      showLibrary();
-    }
-  };
+  if (confirm("Are you sure you want to delete your account? This will permanently erase your profile and all your favorites.")) {
+    localStorage.removeItem('narratica_user');
+    localStorage.removeItem('narratica_favorites');
+
+    alert("Your account has been deleted.");
+
+    window.location.reload();
+  }
+};
 
   return (
     <div className="p-4 md:p-8 bg-neutral-900 text-white h-full overflow-y-auto">
