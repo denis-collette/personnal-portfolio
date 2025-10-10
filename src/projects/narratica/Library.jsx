@@ -36,11 +36,11 @@ export default function Library({
     const lowercasedQuery = searchQuery.toLowerCase();
     booksToDisplay = booksToDisplay.filter(book => {
       const titleMatch = book.title.toLowerCase().includes(lowercasedQuery);
-      const authorMatch = book.authorName 
+      const authorMatch = book.authorName
         ? book.authorName.toLowerCase().includes(lowercasedQuery)
-        : book.authors?.some(author => 
-            `${author.first_name} ${author.last_name}`.toLowerCase().includes(lowercasedQuery)
-          );
+        : book.authors?.some(author =>
+          `${author.first_name} ${author.last_name}`.toLowerCase().includes(lowercasedQuery)
+        );
       return titleMatch || authorMatch;
     });
   }
@@ -71,7 +71,7 @@ export default function Library({
             <SearchBar
               value={searchQuery}
               onSearch={onSearch}
-              placeholder={`Search by ${searchType}...`}
+              placeholder={searchType === 'author' ? "Search by author's last name..." : "Search by title..."}
             />
             <div className="flex bg-neutral-800 rounded-full p-1 text-sm shrink-0">
               <button

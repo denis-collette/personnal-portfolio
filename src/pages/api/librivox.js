@@ -13,6 +13,13 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ imageUrl: match ? match[1] : null }));
     }
 
+    if (params.author) {
+      const authorQuery = params.author;
+      const nameParts = authorQuery.replace('^', '').trim().split(' ');
+      params.author = nameParts[nameParts.length - 1];
+      console.log(`[API PROXY - POST] Modified author search to: "${params.author}"`);
+    }
+
     let librivoxApiUrl = new URL('https://librivox.org/api/feed/audiobooks/');
     for (const key in params) {
       if (params[key] !== undefined) {
