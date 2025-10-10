@@ -6,8 +6,18 @@ import Library from './Library.jsx';
 import BookDetail from './BookDetail.jsx';
 import Visualizer from './safeZone/Visualizer.tsx';
 import Profile from './components/Profile.jsx';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 const PAGE_SIZE = 20;
+
+const mockUser = {
+  username: "DemoUser",
+  email: "demo@narratica.app",
+  first_name: "Alex",
+  last_name: "River",
+  date_joined: "2024-01-01T10:00:00Z",
+  profile_img: "https://github.com/shadcn.png",
+};
 
 export default function App() {
   const [view, setView] = useState({ page: 'library', id: null });
@@ -26,6 +36,7 @@ export default function App() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [paginatedBooks, setPaginatedBooks] = useState([]);
   const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const [userData, setUserData] = useLocalStorage('narratica_user', mockUser);
 
   const [favoriteIds, setFavoriteIds] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -49,7 +60,7 @@ export default function App() {
 
   useEffect(() => {
     if (showFavoritesOnly || view.page !== 'library') return;
-    
+
     if (prevSearchType.current !== searchType && !debouncedQuery) {
       prevSearchType.current = searchType;
       return;
@@ -167,6 +178,17 @@ export default function App() {
     };
   }, [searchQuery]);
 
+  const handleProfileUpdate = (newUserData) => {
+    setUserData(newUserData);
+  };
+
+  const handleAuthorSearch = (authorName) => {
+    setSearchType('author');
+    setSearchQuery(authorName);
+    setDebouncedQuery(authorName);
+    setView({ page: 'library', id: null });
+  };
+
   const toggleFavorite = (bookId) => {
     setFavoriteIds(prevIds => {
       const newIds = new Set(prevIds);
@@ -208,7 +230,14 @@ export default function App() {
   const renderCurrentPage = () => {
     switch (view.page) {
       case 'profile':
-        return <Profile showLibrary={showLibrary} showBookDetail={showBookDetail} favoriteBooks={favoriteBooks} />;
+        return <Profile
+          userData={userData}
+          onProfileUpdate={handleProfileUpdate}
+          showLibrary={showLibrary}
+          showBookDetail={showBookDetail}
+          favoriteBooks={favoriteBooks}
+          onAuthorSearch={handleAuthorSearch}
+        />;
       case 'bookDetail':
         return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} isFavorited={favoriteIds.has(currentBookDetails?.id)} toggleFavorite={() => toggleFavorite(currentBookDetails?.id)} />;
       case 'visualizer':
@@ -236,7 +265,14 @@ export default function App() {
 
   return (
     <div className="relative flex flex-col h-[85vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
-      <NavBar showProfile={showProfile} showLibrary={showLibrary} showVisualizer={showVisualizer} isLoggedIn={isLoggedIn} toggleLogin={toggleLogin} />
+      <NavBar
+        userData={userData}
+        showProfile={showProfile}
+        showLibrary={showLibrary}
+        showVisualizer={showVisualizer}
+        isLoggedIn={isLoggedIn}
+        toggleLogin={toggleLogin}
+      />
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         {renderCurrentPage()}
       </main>

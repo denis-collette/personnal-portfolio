@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import homeIcon from '../assets/favicon.ico';
 import { ArrowLeftOnRectangleIcon, Bars3Icon, XMarkIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 
-// The onSearch prop is no longer needed
 interface NavBarProps {
   showLibrary: () => void;
   showVisualizer: () => void;
   showProfile: () => void;
   isLoggedIn: boolean;
   toggleLogin: () => void;
+  userData: {
+    username: string;
+    profile_img: string;
+  };
 }
 
 const NavBar: React.FC<NavBarProps> = ({
@@ -16,7 +19,8 @@ const NavBar: React.FC<NavBarProps> = ({
   showVisualizer,
   showProfile,
   isLoggedIn,
-  toggleLogin
+  toggleLogin,
+  userData
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -50,8 +54,8 @@ const NavBar: React.FC<NavBarProps> = ({
                 <button onClick={toggleLogin} title="Logout" className="px-3 py-2 rounded-full text-sm font-medium transition-all bg-neutral-800 text-white hover:bg-neutral-700">
                   <ArrowLeftOnRectangleIcon className="h-5 w-5" />
                 </button>
-                <a href="#" onClick={(e) => handleNavClick(e, showProfile)} title={`Profile: ${mockUser.username}`} className="flex-shrink-0">
-                  <img src={mockUser.avatar} alt="User Avatar" className="w-9 h-9 rounded-full" />
+                <a href="#" onClick={(e) => handleNavClick(e, showProfile)} title={`Profile: ${userData.username}`} className="flex-shrink-0">
+                  <img src={userData.profile_img} alt="User Avatar" className="w-9 h-9 rounded-full object-cover" />
                 </a>
               </>
             ) : (
