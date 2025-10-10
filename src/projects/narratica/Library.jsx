@@ -55,7 +55,7 @@ export default function Library({
           <span>{showFavoritesOnly ? 'Show All Books' : 'Show Favorites'}</span>
         </button>
         <div className="w-full md:w-auto md:max-w-xs">
-          <SearchBar onSearch={onSearch} />
+          <SearchBar value={searchQuery} onSearch={onSearch} />
         </div>
       </div>
 

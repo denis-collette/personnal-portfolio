@@ -18,6 +18,7 @@ export default function App() {
   const [currentBookDetails, setCurrentBookDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -51,7 +52,7 @@ export default function App() {
       try {
         const response = await fetch('/api/librivox', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sort_order: 'date_added', limit: PAGE_SIZE, offset, title: searchQuery ? `^${searchQuery}` : undefined })
+          body: JSON.stringify({ sort_order: 'date_added', limit: PAGE_SIZE, offset, title: debouncedQuery ? `^${debouncedQuery}` : undefined })
         });
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
         const data = await response.json();
@@ -74,7 +75,7 @@ export default function App() {
       finally { setIsLoading(false); }
     };
     fetchData();
-  }, [view.page, offset, searchQuery, showFavoritesOnly]);
+  }, [view.page, offset, debouncedQuery, showFavoritesOnly]);
 
   useEffect(() => {
     const fetchAllFavorites = async () => {
@@ -137,6 +138,16 @@ export default function App() {
     }
   }, [activeSong]);
 
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchQuery]);
+
   const toggleFavorite = (bookId) => {
     setFavoriteIds(prevIds => {
       const newIds = new Set(prevIds);
@@ -146,7 +157,10 @@ export default function App() {
     });
   };
   const toggleShowFavorites = () => setShowFavoritesOnly(prev => !prev);
-  const handleSearch = (query) => { setSearchQuery(query); setOffset(0); };
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setOffset(0);
+  };
   const handleNextPage = () => setOffset(prev => prev + PAGE_SIZE);
   const handlePrevPage = () => setOffset(prev => Math.max(0, prev - PAGE_SIZE));
   const jumpToPage = (pageNumber) => setOffset(Math.max(0, (pageNumber - 1) * PAGE_SIZE));
