@@ -81,8 +81,9 @@ export default function App() {
         }
 
         const response = await fetch('/api/librivox', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bodyPayload })
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bodyPayload)
         });
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
         const data = await response.json();
