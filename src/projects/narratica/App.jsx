@@ -81,7 +81,7 @@ export default function App() {
         }
 
         const response = await fetch('/api/librivox', {
-          method: 'POST', 
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(bodyPayload)
         });
@@ -267,7 +267,8 @@ export default function App() {
           searchQuery={searchQuery}
           searchType={searchType}
           onSearchTypeChange={handleSearchTypeChange}
-          jumpToPage={jumpToPage} />;
+          jumpToPage={jumpToPage}
+        />;
     }
   };
 

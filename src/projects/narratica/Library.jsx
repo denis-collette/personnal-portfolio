@@ -21,11 +21,12 @@ export default function Library({
   jumpToPage
 }) {
   const [pageInput, setPageInput] = useState('');
+  const currentPage = Math.floor(offset / pageSize) + 1;
 
   const handlePageJump = (e) => {
     e.preventDefault();
     const pageNum = parseInt(pageInput, 10);
-    if (pageNum > 0) {
+    if (!isNaN(pageNum) && pageNum > 0) {
       jumpToPage(pageNum);
       setPageInput('');
     }
@@ -111,31 +112,41 @@ export default function Library({
       ) : (
         <div className="text-center text-gray-400 mt-10">
           <h3 className="text-xl font-bold">
-            {showFavoritesOnly ? 'No Favorites Yet' : 'No Books Found'}
+            {showFavoritesOnly ? 'No Favorites Found' : 'No Books Found'}
           </h3>
           <p>
-            {showFavoritesOnly ? 'Click the heart icon on a book\'s detail page to add it.' : 'Your search returned no results.'}
+            {showFavoritesOnly ? 'Your search returned no results from your favorites.' : 'Your search returned no results.'}
           </p>
         </div>
       )}
 
+      {/* PAGINATION */}
       {!showFavoritesOnly && (
-        <div className="flex justify-center items-center gap-4 mt-12">
+        <div className="flex justify-center items-center gap-2 sm:gap-4 mt-12 text-sm">
           <button onClick={handlePrevPage} disabled={offset === 0} className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700">
             &larr; Previous
           </button>
+
           <form onSubmit={handlePageJump} className="flex items-center gap-2">
-            <span className="text-gray-400 hidden sm:inline">Page {Math.floor(offset / pageSize) + 1}</span>
+            <span className="text-gray-400 hidden sm:inline">Page</span>
             <input
-              type="number" min="1" value={pageInput} onChange={(e) => setPageInput(e.target.value)}
-              placeholder="Go to..."
-              className="w-24 p-2 rounded-full bg-neutral-800 text-white text-center text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              type="number"
+              min="1"
+              value={pageInput}
+              onChange={(e) => setPageInput(e.target.value)}
+              placeholder={currentPage.toString()}
+              className="w-20 p-2 rounded-full bg-neutral-800 text-white text-center placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button type="submit" className="px-4 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 text-sm">
               Go
             </button>
           </form>
-          <button onClick={handleNextPage} disabled={!books || books.length < pageSize} className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700">
+
+          <button
+            onClick={handleNextPage}
+            disabled={!books || books.length < pageSize}
+            className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700"
+          >
             Next &rarr;
           </button>
         </div>
