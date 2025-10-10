@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useAnalyser } from './useAnalyser';
 
 export type VisualizerMode =
   | 'bars' | 'circle' | 'wave' | 'ecg' | 'trippy' | 'electric'
@@ -12,11 +11,10 @@ export const allVisualizerModes: VisualizerMode[] = [
   'fire', 'holographic', 'liquid', 'tunnel', 'rosace'
 ];
 
-export default function Visualizer({ audioEl }: { audioEl: HTMLAudioElement | null }) {
+export default function Visualizer({ analyser, audioEl }: { analyser: AnalyserNode | null, audioEl: HTMLAudioElement | null }) {
   const [mode, setMode] = useState<VisualizerMode>('bars');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
-  const analyser = useAnalyser(audioEl);
 
   useEffect(() => {
     if (!analyser || !canvasRef.current) return;

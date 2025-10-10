@@ -37,6 +37,9 @@ export default function App() {
   const [paginatedBooks, setPaginatedBooks] = useState([]);
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [userData, setUserData] = useLocalStorage('narratica_user', mockUser);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceRef = useRef(null);
 
   const [favoriteIds, setFavoriteIds] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -51,6 +54,26 @@ export default function App() {
     if (!audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.crossOrigin = "anonymous";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (audioRef.current && !sourceRef.current) {
+      const AudioContext = window.AudioContext || (window).webkitAudioContext;
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+
+      sourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      sourceRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioContextRef.current.destination);
+
+      const resumeContext = () => {
+        if (audioContextRef.current?.state === 'suspended') {
+          audioContextRef.current.resume();
+        }
+      };
+      audioRef.current.addEventListener('play', resumeContext);
     }
   }, []);
 
@@ -249,7 +272,7 @@ export default function App() {
           onAuthorSearch={handleAuthorSearch}
         />;
       case 'visualizer':
-        return <Visualizer audioEl={audioRef.current} />;
+        return <Visualizer analyser={analyserRef.current} audioEl={audioRef.current} />;
       case 'library':
       default:
         const booksToDisplay = showFavoritesOnly ? favoriteBooks : paginatedBooks;
