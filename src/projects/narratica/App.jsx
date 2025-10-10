@@ -19,6 +19,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [searchType, setSearchType] = useState('title');
+  const prevSearchType = useRef(searchType);
   const [offset, setOffset] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -47,12 +49,29 @@ export default function App() {
 
   useEffect(() => {
     if (showFavoritesOnly || view.page !== 'library') return;
+    
+    if (prevSearchType.current !== searchType && !debouncedQuery) {
+      prevSearchType.current = searchType;
+      return;
+    }
+
+    prevSearchType.current = searchType;
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const bodyPayload = {
+          sort_order: 'date_added',
+          limit: PAGE_SIZE,
+          offset
+        };
+
+        if (debouncedQuery) {
+          bodyPayload[searchType] = `^${debouncedQuery}`;
+        }
+
         const response = await fetch('/api/librivox', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sort_order: 'date_added', limit: PAGE_SIZE, offset, title: debouncedQuery ? `^${debouncedQuery}` : undefined })
+          body: JSON.stringify({ bodyPayload })
         });
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
         const data = await response.json();
@@ -75,7 +94,7 @@ export default function App() {
       finally { setIsLoading(false); }
     };
     fetchData();
-  }, [view.page, offset, debouncedQuery, showFavoritesOnly]);
+  }, [view.page, offset, debouncedQuery, showFavoritesOnly, searchType]);
 
   useEffect(() => {
     const fetchAllFavorites = async () => {
@@ -161,6 +180,7 @@ export default function App() {
     setSearchQuery(query);
     setOffset(0);
   };
+  const handleSearchTypeChange = (type) => setSearchType(type);
   const handleNextPage = () => setOffset(prev => prev + PAGE_SIZE);
   const handlePrevPage = () => setOffset(prev => Math.max(0, prev - PAGE_SIZE));
   const jumpToPage = (pageNumber) => setOffset(Math.max(0, (pageNumber - 1) * PAGE_SIZE));
@@ -197,7 +217,20 @@ export default function App() {
       default:
         const booksToDisplay = showFavoritesOnly ? favoriteBooks : paginatedBooks;
         const showLoading = isLoading && !showFavoritesOnly;
-        return <Library books={booksToDisplay} isLoading={showLoading} showBookDetail={showBookDetail} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} offset={offset} pageSize={PAGE_SIZE} showFavoritesOnly={showFavoritesOnly} toggleShowFavorites={toggleShowFavorites} onSearch={handleSearch} searchQuery={searchQuery} jumpToPage={jumpToPage} />;
+        return <Library
+          books={booksToDisplay}
+          isLoading={showLoading}
+          showBookDetail={showBookDetail}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          offset={offset} pageSize={PAGE_SIZE}
+          showFavoritesOnly={showFavoritesOnly}
+          toggleShowFavorites={toggleShowFavorites}
+          onSearch={handleSearch}
+          searchQuery={searchQuery}
+          searchType={searchType}
+          onSearchTypeChange={handleSearchTypeChange}
+          jumpToPage={jumpToPage} />;
     }
   };
 

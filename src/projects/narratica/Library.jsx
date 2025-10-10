@@ -16,6 +16,8 @@ export default function Library({
   toggleShowFavorites,
   onSearch,
   searchQuery,
+  searchType,
+  onSearchTypeChange,
   jumpToPage
 }) {
   const [pageInput, setPageInput] = useState('');
@@ -43,19 +45,45 @@ export default function Library({
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-        <h2 className="text-white font-bold text-3xl shrink-0">
+      <div className="flex flex-col gap-5 mb-10">
+        {/* Row 1: Title */}
+        <h2 className="text-white font-bold text-3xl">
           {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
         </h2>
-        <button
-          onClick={toggleShowFavorites}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600'}`}
-        >
-          {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
-          <span>{showFavoritesOnly ? 'Show All Books' : 'Show Favorites'}</span>
-        </button>
-        <div className="w-full md:w-auto md:max-w-xs">
-          <SearchBar value={searchQuery} onSearch={onSearch} />
+
+        {/* Row 2: All Controls */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+          {/* Search Bar + Toggle Group*/}
+          <div className="flex items-center gap-2 w-full flex-grow">
+            <SearchBar
+              value={searchQuery}
+              onSearch={onSearch}
+              placeholder={`Search by ${searchType}...`}
+            />
+            <div className="flex bg-neutral-800 rounded-full p-1 text-sm shrink-0">
+              <button
+                onClick={() => onSearchTypeChange('title')}
+                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'title' ? 'bg-indigo-500 text-white' : 'text-gray-400 hover:bg-neutral-700'}`}
+              >
+                Title
+              </button>
+              <button
+                onClick={() => onSearchTypeChange('author')}
+                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'author' ? 'bg-indigo-500 text-white' : 'text-gray-400 hover:bg-neutral-700'}`}
+              >
+                Author
+              </button>
+            </div>
+          </div>
+
+          {/* Favorites Button */}
+          <button
+            onClick={toggleShowFavorites}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap w-full sm:w-auto ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600'}`}
+          >
+            {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
+            <span>{showFavoritesOnly ? 'Show All Books' : 'Show Favorites'}</span>
+          </button>
         </div>
       </div>
 
