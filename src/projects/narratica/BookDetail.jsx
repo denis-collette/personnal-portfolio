@@ -2,7 +2,7 @@ import React from 'react'; // Remove useState
 import { PlayIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline';
 
-export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavorited, toggleFavorite }) {
+export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavorited, toggleFavorite, onAuthorSearch }) {
   const handlePlay = (track, trackIndex) => {
     const playlistTracks = bookDetails?.tracks || bookDetails?.sections;
     if (playlistTracks) {
@@ -55,10 +55,21 @@ export default function BookDetail({ bookDetails, isLoading, setPlaylist, isFavo
         </section>
         <div>
           <h2 className="text-3xl font-bold">{bookDetails.title}</h2>
-          <p className="text-lg text-gray-300 mt-2">
-            by {bookDetails.authors[0]?.first_name} {bookDetails.authors[0]?.last_name}
-          </p>
-          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors">
+          <div className="text-lg text-gray-300 mt-2">
+            by{' '}
+            {bookDetails.authors.map((author, index) => (
+              <React.Fragment key={index}>
+                <button
+                  onClick={() => onAuthorSearch(`${author.first_name} ${author.last_name}`)}
+                  className="hover:text-white hover:underline focus:outline-none focus:underline"
+                >
+                  {author.first_name} {author.last_name}
+                </button>
+                {index < bookDetails.authors.length - 1 && ', '}
+              </React.Fragment>
+            ))}
+          </div>
+          <button onClick={toggleFavorite} title="Add to Favorites" className="text-indigo-400 hover:text-white transition-colors mt-4">
             {isFavorited ? (
               <HeartIconSolid className="h-7 w-7" />
             ) : (

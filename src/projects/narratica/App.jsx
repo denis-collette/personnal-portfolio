@@ -239,7 +239,14 @@ export default function App() {
           onAuthorSearch={handleAuthorSearch}
         />;
       case 'bookDetail':
-        return <BookDetail bookDetails={currentBookDetails} isLoading={isLoading} setPlaylist={handleSetPlaylist} isFavorited={favoriteIds.has(currentBookDetails?.id)} toggleFavorite={() => toggleFavorite(currentBookDetails?.id)} />;
+        return <BookDetail
+          bookDetails={currentBookDetails}
+          isLoading={isLoading}
+          setPlaylist={handleSetPlaylist}
+          isFavorited={favoriteIds.has(currentBookDetails?.id)}
+          toggleFavorite={() => toggleFavorite(currentBookDetails?.id)}
+          onAuthorSearch={handleAuthorSearch}
+        />;
       case 'visualizer':
         return <Visualizer audioEl={audioRef.current} />;
       case 'library':

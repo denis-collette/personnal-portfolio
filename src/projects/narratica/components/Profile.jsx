@@ -146,7 +146,7 @@ export default function Profile({ userData, onProfileUpdate, showLibrary, showBo
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white/5 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Authors (Top 5)</h3>
+            <h3 className="text-l font-semibold mb-2 text-indigo-400">Favorite Authors (Top 5)</h3>
             <ul className="space-y-1">
               {topAuthors.length > 0 ? topAuthors.map(name => (
                 <li key={name}>
@@ -158,11 +158,11 @@ export default function Profile({ userData, onProfileUpdate, showLibrary, showBo
             </ul>
           </div>
           <div className="bg-white/5 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2 text-indigo-400">Favorite Narrators (Top 5)</h3>
+            <h3 className="text-l font-semibold mb-2 text-indigo-400">Favorite Narrators (Top 5)</h3>
             <ul className="space-y-1">
               {topNarrators.length > 0 ? topNarrators.map(name => (
                 <li key={name}>{name}</li>
-              )) : <p className="text-sm text-gray-400 italic">No favorite narrators yet.</p>}
+              )) : <p className="text-sm text-gray-400 italic">No favorite narrators yet.<br /><br />The Narrator feature is not available in this LibriVox-based version of Narratica.</p>}
             </ul>
           </div>
         </div>
