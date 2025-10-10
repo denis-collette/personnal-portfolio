@@ -32,6 +32,19 @@ export default function Library({
   };
 
   let booksToDisplay = books;
+  if (showFavoritesOnly && searchQuery && booksToDisplay) {
+    const lowercasedQuery = searchQuery.toLowerCase();
+    booksToDisplay = booksToDisplay.filter(book => {
+      const titleMatch = book.title.toLowerCase().includes(lowercasedQuery);
+      const authorMatch = book.authorName 
+        ? book.authorName.toLowerCase().includes(lowercasedQuery)
+        : book.authors?.some(author => 
+            `${author.first_name} ${author.last_name}`.toLowerCase().includes(lowercasedQuery)
+          );
+      return titleMatch || authorMatch;
+    });
+  }
+
   if (isLoading) {
     return (
       <div>
