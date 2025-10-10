@@ -30,13 +30,6 @@ export default function Library({
   };
 
   let booksToDisplay = books;
-  if (searchQuery && booksToDisplay) {
-    booksToDisplay = booksToDisplay.filter(book =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.authorName?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
-
   if (isLoading) {
     return (
       <div>
