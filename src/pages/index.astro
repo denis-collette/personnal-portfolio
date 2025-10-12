@@ -66,7 +66,7 @@ const linkedinIconSVG = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M
     <!-- Hero Section -->
     <section
       id="home"
-      class="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white flex flex-col justify-center items-center text-center p-8"
+      class="relative min-h-[calc(100svh-67px)] bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white flex flex-col justify-center items-center text-center p-8 pb-20"
     >
       <div class="max-w-4xl mx-auto">
         <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight">
@@ -82,24 +82,56 @@ const linkedinIconSVG = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M
           strong problem-solving and communication skills with my new passion
           for coding to build innovative solutions.
         </p>
-        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+        <div
+          class="mt-10 flex w-full max-w-xs sm:max-w-none flex-col sm:flex-row justify-center gap-4"
+        >
           <a
             href="/cv"
-            class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-md font-bold transition-transform duration-300 transform hover:scale-105"
+            class="w-full sm:w-auto px-8 py-3 bg-gray-500 hover:bg-indigo-700 rounded-md font-bold transition-transform duration-300 transform hover:scale-105"
             >View My CV</a
           >
           <a
+            href="/projects"
+            class="w-full sm:w-auto px-8 py-3 bg-gray-600 hover:bg-indigo-700 rounded-md font-bold transition-transform duration-300 transform hover:scale-105"
+            >My Projects</a
+          >
+          <a
             href="#contact"
-            class="px-8 py-3 bg-gray-700 hover:bg-gray-600 rounded-md font-bold transition-transform duration-300 transform hover:scale-105"
+            class="w-full sm:w-auto px-8 py-3 bg-gray-700 hover:bg-indigo-700 rounded-md font-bold transition-transform duration-300 transform hover:scale-105"
             >Get In Touch</a
           >
         </div>
         <p class="text-center text-indigo-400 pt-8">
-          <a href="https://github.com/denis-collette/personnal-portfolio" target="_blank" rel="noopener noreferrer" class="hover:underline">
+          <a
+            href="https://github.com/denis-collette/personnal-portfolio"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:underline"
+          >
             Discover the original code on GitHub &rarr;
           </a>
         </p>
       </div>
+
+      <a
+        href="#about"
+        aria-label="Scroll down"
+        class="absolute bottom-5 left-1/2 -translate-x-1/2 animate-bounce"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-8 w-8 text-indigo-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </a>
     </section>
 
     <!-- Homepage Sub-navigation -->
@@ -225,7 +257,9 @@ const linkedinIconSVG = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M
           netlify-honeypot="bot-field"
           class="max-w-xl mx-auto mt-8"
         >
-          {/* This input is required for the form to be recognized by Netlify */}
+          {
+            /* This input is required for the form to be recognized by Netlify */
+          }
           <input type="hidden" name="form-name" value="contact" />
 
           {/* This is the hidden honeypot field for spam prevention */}
