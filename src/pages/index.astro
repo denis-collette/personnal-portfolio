@@ -221,12 +221,11 @@ const linkedinIconSVG = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M
           name="contact"
           method="POST"
           data-netlify="true"
+          action="/success"
           netlify-honeypot="bot-field"
           class="max-w-xl mx-auto mt-8"
         >
-          {
-            /* This input is required for the form to be recognized by Netlify */
-          }
+          {/* This input is required for the form to be recognized by Netlify */}
           <input type="hidden" name="form-name" value="contact" />
 
           {/* This is the hidden honeypot field for spam prevention */}
