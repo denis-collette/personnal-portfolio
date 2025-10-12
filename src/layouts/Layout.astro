@@ -55,7 +55,10 @@ const { title } = Astro.props;
           >
         </nav>
 
-        <button id="burger-menu-button" class="md:hidden z-50 p-1">
+        <button
+          id="burger-menu-button"
+          class="md:hidden z-[60] p-1 text-white relative"
+        >
           <svg
             id="burger-icon"
             class="w-6 h-6"
@@ -86,28 +89,28 @@ const { title } = Astro.props;
           </svg>
         </button>
       </div>
-    </header>
 
-    <div
-      id="mobile-menu-overlay"
-      class="fixed inset-0 bg-gray-900/95 z-50 hidden flex-col items-center justify-center gap-6"
-    >
-      <a
-        href="/"
-        class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
-        >Home</a
+      <div
+        id="mobile-menu-overlay"
+        class="fixed inset-0 bg-gray-900/95 z-50 hidden md:hidden flex-col items-center justify-center gap-6"
       >
-      <a
-        href="/cv"
-        class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
-        >My CV</a
-      >
-      <a
-        href="/projects"
-        class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
-        >Projects</a
-      >
-    </div>
+        <a
+          href="/"
+          class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
+          >Home</a
+        >
+        <a
+          href="/cv"
+          class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
+          >My CV</a
+        >
+        <a
+          href="/projects"
+          class="nav-link bg-gray-700 text-white w-48 text-center px-4 py-3 rounded-md font-semibold transition-colors duration-300 hover:bg-indigo-600 text-lg"
+          >Projects</a
+        >
+      </div>
+    </header>
 
     <slot />
 
