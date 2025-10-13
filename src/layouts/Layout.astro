@@ -14,7 +14,8 @@ const { title } = Astro.props;
       content="Denis Collette's personal portfolio website."
     />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{Astro.props.title}</title>
     <link
@@ -31,11 +32,22 @@ const { title } = Astro.props;
       <div
         class="container mx-auto px-6 flex justify-between items-center h-full"
       >
-        <a
-          href="/"
-          class="text-xl font-bold hover:text-indigo-400 transition-colors"
-          >Denis Collette</a
-        >
+        <a href="/">
+          <div class="flex items-center h-full">
+            <img
+              src="/logo.png"
+              alt="Denis Collette logo"
+              class="h-full object-contain"
+              width="80"
+            />
+            <img
+              src="/baseline.png"
+              alt="Denis Collette baseline"
+              width="180"
+              class="hidden sm:block h-full object-contain"
+            />
+          </div>
+        </a>
 
         <nav id="desktop-nav" class="hidden md:flex items-center gap-4">
           <a
