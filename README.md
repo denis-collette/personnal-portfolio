@@ -46,21 +46,46 @@ This is the official repository for my personal portfolio website, built with As
 * **Contact Information:** Ways to get in touch with me.
 
 <!-- 
-narratica/
-- assets/
--- favicon.ico
-- components/
--- AudioPlayerBar.tsx
--- Card.tsx
--- NavBar.tsx
--- SearchBar.tsx
--- SkeletonCard.tsx
-- safeZone/
--- useAnalyser.ts
--- Visualizer.tsx
-- styles/
--- narratica.css
-- App.jsx
-- BookDetail.jsx
-- Library.jsx
+projects/
+- didlycthulhudoo/
+-- assets/
+--- 404.mp3
+--- 404.png
+--- delete.mp3
+--- hello.mp3
+--- logo.png
+--- turtle.png
+-- App.jsx
+-- CreateEvent.jsx
+-- Event.jsx
+-- Header.jsx
+-- Home.jsx
+-- NoPage.jsx
+-- index.css
+-- mockApi.js
+- narratica/
+-- assets/
+--- favicon.ico
+-- components/
+--- AudioPlayerBar.tsx
+--- Card.tsx
+--- NavBar.tsx
+--- Profile.jsx
+--- SearchBar.tsx
+--- SkeletonCard.tsx
+-- hooks/
+--- useLocalStorage.js
+-- safeZone/
+--- Visualizer.tsx
+-- styles/
+--- narratica.css
+-- App.jsx
+-- BookDetail.jsx
+-- Library.jsx
+- pokemilton/
+-- Arena.js
+-- Game.js
+-- Master.js
+-- Pokemilton.js
+-- World.js 
 -->

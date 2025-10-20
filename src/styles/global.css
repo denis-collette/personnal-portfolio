@@ -1,2 +1,165 @@
-/* This file is intentionally left empty because we are using Tailwind CSS. */
-/* The base styles and utilities are handled by the @astrojs/tailwind integration. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==============================================
+  THEME DEFINITION - TAILWIND CONFIG
+  This is the single source of truth for all colors.
+  ==============================================
+*/
+@layer base {
+  :root,
+  [data-theme="light"] {
+    --primary: 220 89% 63%; /* Bright Blue */
+    --primary-content: 210 40% 98%; /* All but White */
+    --secondary: 34 59% 53%; /* Gold */
+    --secondary-focus: 34 59% 48%; /* Darker Gold */
+    --secondary-content: 215 28% 17%; /* Dark Blue */
+    --neutral: 220 13% 91%; /* Light Grey */
+    --neutral-focus: 220 13% 81%; /* Darker Grey */
+    --neutral-content: 222 47% 11%; /* Very Dark Blue */
+    --base-100: 0 0% 100%; /* White */
+    --base-200: 220 14% 96%; /* Off-White */
+    --base-300: 220 13% 91%; /* Light Grey */
+    --base-content: 222 47% 11%; /* Dark Blue Text */
+    --error: 0 84% 60%; /* Red for danger buttons */
+  }
+
+  [data-theme="dark"] {
+    --primary: 197 41% 65%; /* Lighter Blue */
+    --primary-content: 222 47% 11%; /* Dark Blue */
+    --secondary: 44 65% 71%; /* Lighter Gold */
+    --secondary-focus: 44 65% 66%; /* Slightly Darker Gold */
+    --secondary-content: 215 28% 17%; /* Dark Blue */
+    --neutral: 220 13% 25%; /* Mid Grey */
+    --neutral-focus: 220 13% 18%; /* Darker Grey */
+    --neutral-content: 210 40% 98%; /* Almost White */
+    --base-100: 222 47% 11%; /* Dark Blue bg */
+    --base-200: 221 48% 15%; /* Slightly Lighter Dark Blue */
+    --base-300: 220 13% 25%; /* Mid Grey */
+    --base-content: 210 40% 98%; /* Light Text */
+  }
+}
+@layer base {
+  html {
+    scroll-padding-top: 120px;
+  }
+  a {
+    @apply text-secondary transition-colors duration-300;
+  }
+  a:hover {
+    @apply text-secondary-focus;
+  }
+}
+
+/* ==============================================
+  REUSABLE COMPONENT STYLES
+  ==============================================
+*/
+@layer components {
+  .btn {
+    @apply px-6 py-2 rounded-md font-bold transition-all duration-300 transform hover:scale-105 focus:outline-none;
+  }
+  .btn-neutral {
+    @apply bg-neutral text-neutral-content;
+  }
+  .btn-neutral:hover {
+    @apply bg-primary text-primary-content outline outline-2 outline-offset-2 outline-secondary;
+  }
+  .btn-danger {
+    @apply bg-error text-primary-content;
+  }
+  .subnav-container {
+    @apply bg-base-200/80 backdrop-blur-sm sticky top-[68px] z-30 shadow-sm border-y border-base-content/10 h-[52px];
+  }
+  .subnav {
+    @apply container h-full flex justify-start md:justify-center items-center overflow-x-auto;
+  }
+  .nav-link,
+  .subnav-link {
+    @apply px-4 py-2 rounded-md font-semibold text-base-content whitespace-nowrap transition-all duration-300 transform hover:scale-105;
+  }
+  .nav-link-mobile {
+    @apply w-48 text-center text-lg;
+  }
+  .nav-link[aria-current="page"],
+  .subnav-link[aria-current="page"] {
+    @apply bg-primary text-primary-content cursor-default pointer-events-none scale-105;
+  }
+  .nav-link:hover,
+  .subnav-link:hover {
+    @apply bg-primary text-primary-content outline outline-2 outline-offset-2 outline-secondary;
+  }
+  .form-input {
+    @apply mt-1 block w-full bg-neutral border-transparent rounded-md shadow-sm py-2 px-3 text-base-content focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-shadow;
+  }
+  .skill-card {
+    @apply flex flex-col items-center p-4 bg-base-100 text-base-content rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300;
+  }
+  .soft-skill-badge {
+    background-color: hsl(var(--primary) / 0.2);
+    @apply text-primary font-bold text-sm px-4 py-2 rounded-full;
+  }
+  .container {
+    @apply mx-auto px-6 w-full;
+  }
+  .section-padding {
+    @apply py-16 px-4 sm:px-6;
+  }
+  .project-card {
+    @apply bg-base-300 p-4 md:p-6 rounded-lg shadow-xl max-w-4xl mx-auto;
+  }
+}
+
+/* ==============================================
+  CV PAGE SPECIFIC STYLES
+  ==============================================
+*/
+@layer components {
+  .section-title {
+    @apply text-4xl font-extrabold text-center text-secondary mb-12 tracking-tight;
+  }
+
+  .timeline-line {
+    @apply absolute left-4 top-0 h-full w-0.5 bg-base-content/20 md:left-1/2 md:-translate-x-1/2;
+  }
+
+  .timeline-event {
+    @apply relative mb-8 pl-12 md:flex md:w-full md:items-center md:pl-0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+
+  .timeline-event.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-bubble {
+    @apply absolute left-4 top-1 z-10 flex h-8 w-8 -translate-x-1/2 transform items-center justify-center rounded-full bg-primary text-primary-content shadow-xl md:relative md:left-0 md:transform-none;
+  }
+
+  .timeline-card {
+    @apply w-full cursor-pointer rounded-lg bg-base-200 p-6 shadow-xl transition-all duration-500 md:w-5/12;
+  }
+
+  .timeline-card .card-header {
+    @apply flex items-center justify-between;
+  }
+
+  .timeline-card .card-body {
+    @apply max-h-0 overflow-hidden transition-all duration-500 ease-in-out;
+  }
+
+  .timeline-card .chevron.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .certification-card {
+    @apply flex h-full flex-col rounded-lg border border-base-content/20 bg-base-200 p-6 text-left shadow-lg;
+  }
+}
+
