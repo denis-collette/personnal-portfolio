@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import PokemiltonGame from "../components/PokemiltonGame.astro";
 import Didlycthulhudoo from "../components/Didlycthulhudoo.astro";
-import Narratica from "../components/Narratica.astro";
 ---
 
 <Layout title="My Projects | Denis Collette">
@@ -55,7 +54,16 @@ import Narratica from "../components/Narratica.astro";
             Discover the original code on GitHub &rarr;
           </a>
         </p>
-        <Narratica />
+
+        <iframe
+          src="/projects/narratica-embed"
+          class="w-full h-[85vh] min-h-[550px] max-h-[800px] border-none rounded-lg mx-auto"
+          title="Narratica application embed"
+          frameborder="0"
+          scrolling="no"
+        >
+        </iframe>
+        
       </div>
     </section>
 

@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './styles/narratica.css';
 import NavBar from './components/NavBar.tsx';
 import AudioPlayerBar from './components/AudioPlayerBar.tsx';
 import Library from './Library.jsx';
@@ -296,7 +295,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex flex-col h-[85vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
+    <div className="relative flex flex-col h-[80vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
       <NavBar
         userData={userData}
         showProfile={showProfile}
