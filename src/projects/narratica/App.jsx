@@ -304,7 +304,7 @@ export default function App() {
         isLoggedIn={isLoggedIn}
         toggleLogin={toggleLogin}
       />
-      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+      <main className={`flex-1 overflow-y-auto ${view.page === 'visualizer' ? 'p-0' : 'p-4 md:p-8'}`}>
         {renderCurrentPage()}
       </main>
       {activeSong && (

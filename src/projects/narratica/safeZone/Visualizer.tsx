@@ -67,19 +67,31 @@ export default function Visualizer({ analyser, audioEl }: { analyser: AnalyserNo
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-black p-4 rounded-lg">
-      <div className="w-full flex justify-between items-center mb-4">
+    <div className="w-full h-full flex flex-col items-center bg-narratica-dark p-4 rounded-lg">
+      <div className="w-full flex justify-between items-center mb-4 flex-shrink-0">
         <h2 className="text-xl font-bold">Audio Visualizer</h2>
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value as VisualizerMode)}
-          className="bg-neutral-800 text-white p-2 rounded-md"
+          className="bg-narratica-gray-dark text-narratica-text-primary p-2 rounded-md"
         >
           {allVisualizerModes.map(m => <option key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>)}
         </select>
       </div>
-      <canvas ref={canvasRef} width={800} height={400} onClick={handleCanvasClick} className="w-full h-auto aspect-[2/1] bg-neutral-900 rounded-md cursor-pointer" />
-      <p className="text-gray-400 text-sm mt-2">Click canvas to play/pause the active track.</p>
+
+      <div className="w-full flex-1 min-h-0 flex justify-center items-center">
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={400}
+          onClick={handleCanvasClick}
+          className="max-w-full max-h-full aspect-[2/1] bg-narratica-gray-dark rounded-md cursor-pointer"
+        />
+      </div>
+
+      <p className="text-narratica-text-secondary text-sm mt-2 flex-shrink-0">
+        Click canvas to play/pause the active track.
+      </p>
     </div>
   );
 }

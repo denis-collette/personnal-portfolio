@@ -84,33 +84,33 @@ export default function AudioPlayerBar({ audioEl, activeSong, onNext, onPrev, on
   };
 
   return (
-    <div className="w-full flex flex-col sm:flex-row items-center justify-between p-3 bg-neutral-900 text-white gap-4">
+    <div className="w-full flex flex-col sm:flex-row items-center justify-between p-3 bg-narratica-gray-light text-narratica-text-primary gap-4">
       <div onClick={onSongClick} className="flex items-center gap-4 w-full sm:w-1/4 cursor-pointer">
         {activeSong.imgUrl ? (
-          <img src={activeSong.imgUrl} alt={activeSong.title} className="w-16 h-16 rounded bg-neutral-800" />
+          <img src={activeSong.imgUrl} alt={activeSong.title} className="w-16 h-16 rounded bg-narratica-gray-dark" />
         ) : (
-          <div className="w-16 h-16 rounded bg-neutral-800 flex items-center justify-center">
-            <FaMusic className="text-gray-500 text-2xl" />
+          <div className="w-16 h-16 rounded bg-narratica-gray-dark flex items-center justify-center">
+            <FaMusic className="text-narratica-text-secondary text-2xl" />
           </div>
         )}
         <div>
           <p className="font-bold truncate text-sm">{activeSong.title}</p>
-          <p className="text-xs text-gray-400 truncate">{activeSong.author}</p>
+          <p className="text-xs text-narratica-text-secondary truncate">{activeSong.author}</p>
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-2 w-full sm:flex-grow">
         <div className="flex items-center gap-4 md:gap-6 text-xl">
-          <button onClick={() => onSkipRef.current(-10)} title="Skip back 10s" className="cursor-pointer hover:text-gray-400"><FaUndo /></button>
-          <FaStepBackward onClick={onPrev} className="cursor-pointer hover:text-gray-400" title="Previous Chapter" />
+          <button onClick={() => onSkipRef.current(-10)} title="Skip back 10s" className="cursor-pointer hover:text-narratica-text-secondary"><FaUndo /></button>
+          <FaStepBackward onClick={onPrev} className="cursor-pointer hover:text-narratica-text-secondary" title="Previous Chapter" />
           <button onClick={handlePlayPause} className="text-3xl" title="Play/Pause">{isPlaying ? <FaPause /> : <FaPlay />}</button>
-          <FaStepForward onClick={onNext} className="cursor-pointer hover:text-gray-400" title="Next Chapter" />
-          <button onClick={() => onSkipRef.current(10)} title="Skip forward 10s" className="cursor-pointer hover:text-gray-400"><FaRedo /></button>
+          <FaStepForward onClick={onNext} className="cursor-pointer hover:text-narratica-text-secondary" title="Next Chapter" />
+          <button onClick={() => onSkipRef.current(10)} title="Skip forward 10s" className="cursor-pointer hover:text-narratica-text-secondary"><FaRedo /></button>
         </div>
         <div className="w-full flex items-center gap-2 text-xs">
           <span>{formatTime(currentTime)}</span>
-          <div ref={progressBarRef} onClick={handleProgressBarClick} className="w-full bg-gray-600 rounded-full h-1 cursor-pointer">
-            <div className="bg-white h-1 rounded-full" style={{ width: `${progress}%` }}></div>
+          <div ref={progressBarRef} onClick={handleProgressBarClick} className="w-full bg-narratica-gray-dark rounded-full h-1 cursor-pointer">
+            <div className="bg-narratica-text-primary h-1 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
           <span>{formatTime(duration)}</span>
         </div>
@@ -120,7 +120,7 @@ export default function AudioPlayerBar({ audioEl, activeSong, onNext, onPrev, on
         <button onClick={toggleMute} title="Mute/Unmute">
           {isMuted || volume === 0 ? <FaVolumeMute /> : <FaVolumeUp />}
         </button>
-        <input type="range" min="0" max="1" step="0.01" value={isMuted ? 0 : volume} onChange={handleVolumeChange} className="w-24 accent-white" />
+        <input type="range" min="0" max="1" step="0.01" value={isMuted ? 0 : volume} onChange={handleVolumeChange} className="w-24 accent-narratica-green" />
       </div>
     </div>
   );

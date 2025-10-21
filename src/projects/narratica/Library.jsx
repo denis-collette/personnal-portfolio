@@ -49,7 +49,7 @@ export default function Library({
   if (isLoading) {
     return (
       <div>
-        <h2 className="text-white font-bold text-3xl mb-10">Searching the archives...</h2>
+        <h2 className="text-narratica-text-primary font-bold text-3xl mb-10">Searching the archives...</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
           {Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
@@ -61,7 +61,7 @@ export default function Library({
     <div>
       <div className="flex flex-col gap-5 mb-10">
         {/* Row 1: Title */}
-        <h2 className="text-white font-bold text-3xl">
+        <h2 className="text-narratica-text-primary font-bold text-3xl">
           {showFavoritesOnly ? 'My Favorites' : 'Browse Audiobooks'}
         </h2>
 
@@ -74,16 +74,16 @@ export default function Library({
               onSearch={onSearch}
               placeholder={searchType === 'author' ? "Search by author's last name..." : "Search by title..."}
             />
-            <div className="flex bg-neutral-800 rounded-full p-1 text-sm shrink-0">
+            <div className="flex bg-narratica-gray-dark rounded-full p-1 text-sm shrink-0">
               <button
                 onClick={() => onSearchTypeChange('title')}
-                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'title' ? 'bg-indigo-500 text-white' : 'text-gray-400 hover:bg-neutral-700'}`}
+                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'title' ? 'bg-narratica-green text-narratica-text-primary' : 'text-narratica-text-secondary hover:bg-narratica-gray-light'}`}
               >
                 Title
               </button>
               <button
                 onClick={() => onSearchTypeChange('author')}
-                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'author' ? 'bg-indigo-500 text-white' : 'text-gray-400 hover:bg-neutral-700'}`}
+                className={`px-3 py-1 rounded-full transition-colors ${searchType === 'author' ? 'bg-narratica-green text-narratica-text-primary' : 'text-narratica-text-secondary hover:bg-narratica-gray-light'}`}
               >
                 Author
               </button>
@@ -93,7 +93,7 @@ export default function Library({
           {/* Favorites Button */}
           <button
             onClick={toggleShowFavorites}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap w-full sm:w-auto ${showFavoritesOnly ? 'bg-indigo-500 text-white' : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap w-full sm:w-auto ${showFavoritesOnly ? 'bg-narratica-green text-narratica-text-primary' : 'bg-narratica-gray-light text-narratica-text-secondary hover:bg-narratica-gray-dark'}`}
           >
             {showFavoritesOnly && <HeartIconSolid className="h-4 w-4" />}
             <span>{showFavoritesOnly ? 'Show All Books' : 'Show Favorites'}</span>
@@ -110,7 +110,7 @@ export default function Library({
           ))}
         </div>
       ) : (
-        <div className="text-center text-gray-400 mt-10">
+        <div className="text-center text-narratica-text-secondary mt-10">
           <h3 className="text-xl font-bold">
             {showFavoritesOnly ? 'No Favorites Found' : 'No Books Found'}
           </h3>
@@ -123,21 +123,21 @@ export default function Library({
       {/* PAGINATION */}
       {!showFavoritesOnly && (
         <div className="flex justify-center items-center gap-2 sm:gap-4 mt-12 text-sm">
-          <button onClick={handlePrevPage} disabled={offset === 0} className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700">
+          <button onClick={handlePrevPage} disabled={offset === 0} className="px-4 py-2 bg-narratica-gray-dark rounded-full disabled:opacity-50 hover:bg-narratica-gray-light">
             &larr; Previous
           </button>
 
           <form onSubmit={handlePageJump} className="flex items-center gap-2">
-            <span className="text-gray-400 hidden sm:inline">Page</span>
+            <span className="text-narratica-text-secondary hidden sm:inline">Page</span>
             <input
               type="number"
               min="1"
               value={pageInput}
               onChange={(e) => setPageInput(e.target.value)}
               placeholder={currentPage.toString()}
-              className="w-20 p-2 rounded-full bg-neutral-800 text-white text-center placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-20 p-2 rounded-full bg-narratica-gray-dark text-narratica-text-primary text-center placeholder-narratica-text-secondary focus:outline-none focus:ring-2 focus:ring-narratica-green"
             />
-            <button type="submit" className="px-4 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 text-sm">
+            <button type="submit" className="px-4 py-2 bg-narratica-green rounded-full hover:bg-narratica-green/80 text-sm">
               Go
             </button>
           </form>
@@ -145,7 +145,7 @@ export default function Library({
           <button
             onClick={handleNextPage}
             disabled={!books || books.length < pageSize}
-            className="px-4 py-2 bg-neutral-800 rounded-full disabled:opacity-50 hover:bg-neutral-700"
+            className="px-4 py-2 bg-narratica-gray-dark rounded-full disabled:opacity-50 hover:bg-narratica-gray-light"
           >
             Next &rarr;
           </button>
