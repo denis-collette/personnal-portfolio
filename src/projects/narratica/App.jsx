@@ -295,7 +295,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex flex-col h-[80vh] min-h-[550px] max-h-[800px] bg-neutral-900 text-white rounded-lg overflow-hidden">
+    <div className="relative flex flex-col h-[100vh] min-h-[550px] max-h-[800px] bg-narratica-dark text-narratica-text-primary rounded-lg overflow-hidden">
       <NavBar
         userData={userData}
         showProfile={showProfile}
