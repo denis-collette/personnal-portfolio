@@ -121,103 +121,181 @@ const educationHistory = [
     align: "right",
   },
 ];
+
+const credlyUrl = "https://www.credly.com/users/denis-collette.83478a41/badges";
+
 const certifications = [
+  {
+    name: "Connect and Protect: Networks and Network Security",
+    issuer: "Google",
+    date: "Nov 2025",
+    skills: ["Cybersecurity", "IT"],
+    url: "https://coursera.org/share/9e012f25b8719482903b57ae62e30e7f",
+    category: "Cybersecurity",
+  },
+  {
+    name: "Play It Safe: Manage Security Risks",
+    issuer: "Google",
+    date: "Oct 2025",
+    skills: ["Cybersecurity", "IT"],
+    url: "https://coursera.org/share/bc4bb38708d65bfa5bee545b39e9a6e1",
+    category: "Cybersecurity",
+  },
+  {
+    name: "Foundations of Cybersecurity",
+    issuer: "Google",
+    date: "Oct 2025",
+    skills: ["Cybersecurity", "IT"],
+    url: "https://coursera.org/share/5f016c27c4439574c31a1a23d7a21c5d",
+    category: "Cybersecurity",
+  },
   {
     name: "Python Essentials 1",
     issuer: "Cisco",
     date: "Mar 2025",
     skills: ["Python", "OOP", "Software Development"],
+    url: credlyUrl,
+    category: "Development",
   },
   {
     name: "JavaScript Essentials 1",
     issuer: "Cisco",
     date: "Nov 2024",
     skills: ["JavaScript", "Web Development", "OOP"],
+    url: credlyUrl,
+    category: "Development",
   },
   {
     name: "Networking Basics",
     issuer: "Cisco",
     date: "Nov 2024",
     skills: ["Windows", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Computer Hardware Basics",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Windows", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Digital Awareness",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Windows", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Introduction to Data Science",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Data Science", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Introduction to IoT",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["IoT", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Linux Unhatched",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Linux", "Computer Science"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Operating Systems Basics",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Linux", "Windows", "OS"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Using Computer and Mobile Devices",
     issuer: "Cisco",
     date: "Oct 2024",
     skills: ["Linux", "Windows"],
+    url: credlyUrl,
+    category: "IT & Networking",
   },
   {
     name: "Introduction to Cybersecurity",
     issuer: "Cisco",
     date: "Sep 2024",
     skills: ["Cybersecurity", "Computer Science"],
+    url: credlyUrl,
+    category: "Cybersecurity",
   },
   {
     name: "Facebook Certified Creative Strategy Professional",
     issuer: "Meta",
     date: "Apr 2020",
     skills: ["Social Media", "Advertising"],
+    url: credlyUrl,
+    category: "Digital Marketing",
   },
   {
     name: "Facebook Certified Digital Marketing Associate",
     issuer: "Meta",
     date: "Apr 2020",
     skills: ["Social Media", "Advertising"],
+    url: credlyUrl,
+    category: "Digital Marketing",
   },
   {
     name: "Facebook Certified Buying Professional",
     issuer: "Meta",
     date: "Jul 2019",
     skills: ["Social Media", "Advertising"],
+    url: credlyUrl,
+    category: "Digital Marketing",
   },
   {
     name: "Facebook Certified Planning Professional",
     issuer: "Meta",
     date: "Jul 2019",
     skills: ["Social Media", "Advertising"],
+    url: credlyUrl,
+    category: "Digital Marketing",
   },
+];
+
+// Grouping logic
+const groupedCertifications = certifications.reduce(
+  (acc, cert) => {
+    const category = cert.category || "Other";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(cert);
+    return acc;
+  },
+  {} as Record<string, typeof certifications>
+);
+
+// Define the order of categories
+const categoryOrder = [
+  "Cybersecurity",
+  "Development",
+  "IT & Networking",
+  "Digital Marketing",
+  "Other",
 ];
 ---
 
 <div class="section-padding">
   <div class="container">
-    <!-- Professional Experience Section -->
     <section id="experience">
       <h2 class="section-title">Professional Experience</h2>
       <div class="relative">
@@ -275,7 +353,6 @@ const certifications = [
       </div>
     </section>
 
-    <!-- Education Section -->
     <section id="education" class="mt-20">
       <h2 class="section-title">Education & Training</h2>
       <div class="relative">
@@ -333,45 +410,67 @@ const certifications = [
       </div>
     </section>
 
-    <!-- Certifications Section -->
     <section id="certifications" class="mt-20">
       <h2 class="section-title">Licenses & Certifications</h2>
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12"
-      >
+      <div class="max-w-6xl mx-auto">
         {
-          certifications.map((cert) => (
-            <div class="certification-card">
-              <div class="flex-grow">
-                <p class="text-lg font-bold">{cert.name}</p>
-                <p class="text-secondary font-semibold text-sm">
-                  {cert.issuer}
-                </p>
-                <p class="text-xs mt-1 opacity-70">{cert.date}</p>
-              </div>
-              <div class="mt-4 pt-4 border-t border-base-content/10">
-                <p class="text-sm font-semibold opacity-80 mb-2">Skills:</p>
-                <div class="flex flex-wrap gap-2">
-                  {cert.skills.map((skill) => (
-                    <span class="soft-skill-badge !text-xs !px-2.5 !py-1">
-                      {skill}
-                    </span>
+          categoryOrder.map((category) => {
+            const certsInCategory = groupedCertifications[category];
+            if (!certsInCategory || certsInCategory.length === 0) return null;
+
+            return (
+              <details class="certification-category-group group border-b border-base-content/10 last:border-b-0 mb-2">
+                <summary class="list-none flex justify-between items-center cursor-pointer p-4 rounded-lg transition-colors hover:bg-base-200/50">
+                  <h3 class="text-2xl font-bold">{category}</h3>
+                  <svg
+                    class="w-6 h-6 transition-transform duration-300 group-open:rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </summary>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-6 px-2">
+                  {certsInCategory.map((cert) => (
+                    <a
+                      href={cert.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="certification-card text-inherit transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                    >
+                      <div class="flex-grow">
+                        <p class="text-lg font-bold">{cert.name}</p>
+                        <p class="text-secondary font-semibold text-sm">
+                          {cert.issuer}
+                        </p>
+                        <p class="text-xs mt-1 opacity-70">{cert.date}</p>
+                      </div>
+                      <div class="mt-4 pt-4 border-t border-base-content/10">
+                        <p class="text-sm font-semibold opacity-80 mb-2">
+                          Skills:
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                          {cert.skills.map((skill) => (
+                            <span class="soft-skill-badge !text-xs !px-2.5 !py-1">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </a>
                   ))}
                 </div>
-              </div>
-            </div>
-          ))
+              </details>
+            );
+          })
         }
-      </div>
-      <div class="text-center">
-        <a
-          href="https://www.credly.com/users/denis-collette.83478a41/badges"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-neutral"
-        >
-          View on Credly
-        </a>
       </div>
     </section>
   </div>
@@ -395,7 +494,7 @@ const certifications = [
       observer.observe(event);
     });
 
-    // Click-to-expand effect
+    // Click-to-expand effect for Timeline
     document.querySelectorAll(".timeline-card").forEach((card) => {
       card.addEventListener("click", () => {
         const body = card.querySelector(".card-body");
