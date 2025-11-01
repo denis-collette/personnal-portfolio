@@ -45,6 +45,14 @@ const skills = {
   ],
 };
 
+// Define categories for the accordion
+const skillCategories = [
+  { title: "Languages & Frameworks", key: "languagesFrameworks" },
+  { title: "Cloud & DevOps", key: "cloudDevOps" },
+  { title: "Databases", key: "databases" },
+  { title: "Tools & Operating Systems", key: "tools" },
+];
+
 const softSkills = [
   "Problem Solving",
   "Adaptability",
@@ -57,7 +65,7 @@ const softSkills = [
 ];
 ---
 
-<Layout title="Denis Collette - Full-Stack Developer">
+<Layout title="Denis Collette - Full-Stack Developer & Cybersecurity">
   <main>
     <!-- Hero Section -->
     <section
@@ -71,11 +79,15 @@ const softSkills = [
           class="w-full max-w-40 sm:max-w-xs mx-auto block"
         />
         <p class="mt-6 text-lg md:text-xl max-w-2xl mx-auto">
-          A versatile marketer and manager transitioning into web development.
-          After years in communication, leisure management, and retail, I've
-          completed intensive full-stack training. Now, I'm eager to blend my
-          strong problem-solving and communication skills with my new passion
-          for coding to build innovative solutions.
+          A versatile marketer and manager transitioning into
+          <strong>web development and cybersecurity</strong>. After years in
+          communication, leisure management, and retail, I've completed intensive
+          full-stack training. Now, I'm eager to blend my strong problem-solving
+          and communication skills with my new passion for
+          <strong>coding and digital security</strong>
+          to build
+          <strong>innovative and secure</strong>
+          solutions.
         </p>
         <div
           class="mt-10 flex w-full max-w-xs sm:max-w-none flex-col sm:flex-row justify-center gap-4"
@@ -139,10 +151,13 @@ const softSkills = [
       <div class="container text-center">
         <h2 class="text-3xl font-bold mb-4 section-title">Current Focus</h2>
         <p class="max-w-2xl mx-auto text-lg">
-          Having recently completed my web development training, my goal is to
-          secure a challenging and rewarding role in the Walloon Ardennes
-          region. I am actively seeking opportunities where I can contribute to
-          a dynamic team and continue to grow my skills.
+          Having recently completed intensive training in
+          <strong>full-stack development and cybersecurity</strong>, my goal is to
+          secure a challenging role in the Walloon Ardennes region. I am actively
+          seeking opportunities where I can contribute to a dynamic team,
+          <strong>build secure applications</strong>, and continue to grow my skills
+          in
+          <strong>both development and defense</strong>.
         </p>
       </div>
     </section>
@@ -150,57 +165,57 @@ const softSkills = [
     <!-- Skills Section -->
     <section id="skills" class="section-padding bg-base-200">
       <div class="container">
-        <h2 class="text-3xl font-bold text-center mb-12 section-title">Technical Skills</h2>
-        <h3 class="text-2xl font-semibold mb-6">Languages & Frameworks</h3>
-        <div
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-12"
-        >
+        <h2 class="text-3xl font-bold text-center mb-12 section-title">
+          Technical Skills
+        </h2>
+
+        <!-- Accordion for Skills -->
+        <div class="max-w-6xl mx-auto">
           {
-            skills.languagesFrameworks.map((skill) => (
-              <div class="skill-card">
-                {" "}
-                <Icon name={skill.icon} />{" "}
-                <span class="mt-2 font-semibold text-center">{skill.name}</span>{" "}
-              </div>
-            ))
+            skillCategories.map((category) => {
+              const skillList = skills[category.key as keyof typeof skills];
+              if (!skillList || skillList.length === 0) return null;
+
+              return (
+                <details class="certification-category-group group border-b border-base-content/10 last:border-b-0 mb-2">
+                  <summary class="list-none flex justify-between items-center cursor-pointer p-4 rounded-lg transition-colors hover:bg-base-200/50">
+                    <h3 class="text-2xl font-bold">{category.title}</h3>
+                    <svg
+                      class="w-6 h-6 transition-transform duration-300 group-open:rotate-180"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </summary>
+                  
+                  <!-- Smaller Skill Cards Grid -->
+                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 py-6 px-2">
+                    {skillList.map((skill) => (
+                      <div class="flex items-center p-3 bg-base-100 rounded-lg shadow-md gap-3">
+                        <Icon name={skill.icon} />
+                        <span class="font-medium text-sm">{skill.name}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                </details>
+              );
+            })
           }
         </div>
-        <div class="grid md:grid-cols-2 gap-12">
-          <div>
-            <h3 class="text-2xl font-semibold mb-6">Databases & Tools</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-              {
-                [...skills.databases, ...skills.tools].map((skill) => (
-                  <div class="skill-card">
-                    {" "}
-                    <Icon name={skill.icon} />{" "}
-                    <span class="mt-2 font-semibold text-center">
-                      {skill.name}
-                    </span>{" "}
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-          <div>
-            <h3 class="text-2xl font-semibold mb-6">Cloud & DevOps</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-              {
-                skills.cloudDevOps.map((skill) => (
-                  <div class="skill-card">
-                    {" "}
-                    <Icon name={skill.icon} />{" "}
-                    <span class="mt-2 font-semibold text-center">
-                      {skill.name}
-                    </span>{" "}
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </div>
+
         <div class="mt-16 text-center">
-          <h3 class="text-3xl font-bold text-center mb-12 section-title">Soft Skills</h3>
+          <h3 class="text-3xl font-bold text-center mb-12 section-title">
+            Soft Skills
+          </h3>
           <div class="flex flex-wrap justify-center gap-3">
             {
               softSkills.map((skill) => (
