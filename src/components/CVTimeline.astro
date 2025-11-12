@@ -7,7 +7,7 @@ const professionalExperience = [
     type: "Internship",
     date: "June 2025 - Sep 2025",
     description:
-      "Developed and maintained web application components using Angular and Astro, contributing to dynamic and responsive user interfaces. Gained practical experience with the AWS ecosystem, deploying and managing cloud infrastructure (S3, CodePipeline, IAM, DynamoDB) in an Agile environment.",
+      "Developed and maintained web application components using Angular and Astro, contributing to dynamic and responsive user interfaces. Gained practical experience with the AWS ecosystem, deploying and managing cloud infrastructure (S3, CodePipeline, IAM, DynamoDB) in an Agile environment. Collaborated with the development team, participating in code reviews and sprint planning.",
     align: "left",
   },
   {
@@ -125,6 +125,14 @@ const educationHistory = [
 const credlyUrl = "https://www.credly.com/users/denis-collette.83478a41/badges";
 
 const certifications = [
+  {
+    name: "Security Fundamentals and Identity Management",
+    issuer: "Packt",
+    date: "Nov 2025",
+    skills: ["Cybersecurity", "IT"],
+    url: "https://coursera.org/share/bd035fcfbaa7e9642fcb616b83f94660",
+    category: "CompTIA Security+ Certification",
+  },
   {
     name: "Google Cybersecurity Professional Certificate",
     issuer: "Google",
@@ -343,6 +351,7 @@ const groupedCertifications = certifications.reduce(
 // Define the order of categories
 const categoryOrder = [
   "Google Cybersecurity Professional Certificate",
+  "CompTIA Security+ Certification",
   "Cybersecurity",
   "Development",
   "IT & Networking",
@@ -369,63 +378,6 @@ const categoryOrder = [
               <div class="timeline-bubble">
                 <span class="font-semibold text-primary-content">
                   {professionalExperience.length - index}
-                </span>
-              </div>
-              <div class="timeline-card">
-                <div class="card-header">
-                  <div>
-                    <span class="font-semibold text-sm text-secondary">
-                      {event.type}
-                    </span>
-                    <h3 class="text-xl font-bold mt-1">{event.title}</h3>
-                    <p class="text-md font-semibold opacity-80">
-                      {event.company}
-                    </p>
-                    <p class="text-sm opacity-60 mb-2">{event.date}</p>
-                  </div>
-                  <svg
-                    class="w-6 h-6 opacity-50 transition-transform duration-300 chevron"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </div>
-                <div class="card-body">
-                  <p class="text-sm pt-4 border-t border-base-content/10 mt-4">
-                    {event.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <section id="education" class="mt-20">
-      <h2 class="section-title">Education & Training</h2>
-      <div class="relative">
-        <div class="timeline-line" aria-hidden="true"></div>
-        {
-          educationHistory.map((event, index) => (
-            <div
-              class:list={[
-                "timeline-event",
-                { "md:flex-row-reverse": event.align === "right" },
-              ]}
-            >
-              <div class="hidden md:block md:w-5/12" />
-              <div class="timeline-bubble">
-                <span class="font-semibold text-primary-content">
-                  {educationHistory.length - index}
                 </span>
               </div>
               <div class="timeline-card">
@@ -530,6 +482,64 @@ const categoryOrder = [
         }
       </div>
     </section>
+
+    <section id="education" class="mt-20">
+      <h2 class="section-title">Education & Training</h2>
+      <div class="relative">
+        <div class="timeline-line" aria-hidden="true"></div>
+        {
+          educationHistory.map((event, index) => (
+            <div
+              class:list={[
+                "timeline-event",
+                { "md:flex-row-reverse": event.align === "right" },
+              ]}
+            >
+              <div class="hidden md:block md:w-5/12" />
+              <div class="timeline-bubble">
+                <span class="font-semibold text-primary-content">
+                  {educationHistory.length - index}
+                </span>
+              </div>
+              <div class="timeline-card">
+                <div class="card-header">
+                  <div>
+                    <span class="font-semibold text-sm text-secondary">
+                      {event.type}
+                    </span>
+                    <h3 class="text-xl font-bold mt-1">{event.title}</h3>
+                    <p class="text-md font-semibold opacity-80">
+                      {event.company}
+                    </p>
+                    <p class="text-sm opacity-60 mb-2">{event.date}</p>
+                  </div>
+                  <svg
+                    class="w-6 h-6 opacity-50 transition-transform duration-300 chevron"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </div>
+                <div class="card-body">
+                  <p class="text-sm pt-4 border-t border-base-content/10 mt-4">
+                    {event.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
   </div>
 </div>
 
